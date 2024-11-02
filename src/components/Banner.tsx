@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 // user interaction
 export default function Banner(){
-    const covers = ['/img/banner.jpg', '/img/banner2.jpg', '/img/banner3.jpg']
+    const covers = ['/img/campground1.jpg', '/img/campground3.jpg']
     const [index, setIndex] = useState(0)
     const router = useRouter()
 
@@ -15,14 +15,14 @@ export default function Banner(){
 
     return(
         <div className={styles.banner} onClick={()=>{setIndex(index+1)}}>
-            <Image src={covers[index%3]}
+            <Image src={covers[index%2]}
             alt = 'banner'
             fill = {true}
             priority
             objectFit='cover'/>
 
             <div className={styles.bannerText}>
-                <h1 className='text-4xl font-medium'>Vaccine Service Center</h1>
+                <h1 className='text-4xl font-medium'>Campground Today</h1>
                 <h3 className='text-xl font-serif'>Get vaccinated today to protect yourself and community!</h3>
             </div>
             {

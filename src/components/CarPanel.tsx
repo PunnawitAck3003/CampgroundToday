@@ -3,7 +3,7 @@ import { useReducer, useState } from "react"
 import ProductCard from "./ProductCard"
 import Link from "next/link"
 import { useRef, useEffect } from "react"
-import getCars from "@/libs/getCars"
+import getCars from "@/libs/getCampgrounds"
 
 export default function CarPanel() {
 

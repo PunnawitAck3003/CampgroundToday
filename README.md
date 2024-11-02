@@ -4,8 +4,8 @@ Frontend Part for Campground Booking website the supports the following function
 
 User Management Functionality
 - User Registration by specifying name, telephone number, email, and password
-- Registered user to Log-in with email and password
-- User to logout
+- (done)Registered user to Log-in with email and password
+- (done)User to logout
 
 Campground Management Functionality
 - Admin user can create / update / delete campground information

@@ -1,4 +1,4 @@
-import getCars from "@/libs/getCars"
+import getCars from "@/libs/getCampgrounds"
 import CarCatalog from "@/components/CarCatalog"
 import { Suspense } from "react"
 import { LinearProgress } from "@mui/material"
