@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['drive.google.com']
+        domains: [
+            'drive.google.com',
+            'photos.thedyrt.com',     // for the Mountain View Campground image
+            'images.squarespace-cdn.com', // for the Lake Tahoe KOA images
+            'live.staticflickr.com'   // for the Acadia National Park Campground image
+        ]
     },
     async headers() {
         return [

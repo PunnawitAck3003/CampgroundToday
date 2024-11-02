@@ -23,7 +23,7 @@ export default function Banner(){
 
             <div className={styles.bannerText}>
                 <h1 className='text-4xl font-medium'>Campground Today</h1>
-                <h3 className='text-xl font-serif'>Get vaccinated today to protect yourself and community!</h3>
+                <h3 className='text-xl font-serif'>Get vaccinated today to protect yourself and community อิอิ!</h3>
             </div>
             {
                 session? <div className='z-30 absolute top-5 right-10 font-semibold text-cyan-800 text-xl'>
@@ -33,9 +33,9 @@ export default function Banner(){
             <button className='bg-white text-cyan-600 border-cyan-600
             font-semibold py-2 px-2 m-2 rounded z-30 absolute bottom-0 right-0
             hover:bg-cyan-600 hover:text-white hover:border-transparent'
-            onClick={(e)=>{e.stopPropagation(); router.push('/car')}}
+            onClick={(e)=>{e.stopPropagation(); router.push('/campground')}}
             >
-                Select Your Travel Partner NOW
+                Check Campground NOW
             </button>
         </div>
     );

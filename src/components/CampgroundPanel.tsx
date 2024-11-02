@@ -3,15 +3,15 @@ import { useReducer, useState } from "react"
 import ProductCard from "./ProductCard"
 import Link from "next/link"
 import { useRef, useEffect } from "react"
-import getCars from "@/libs/getCampgrounds"
+import getCampgrounds from "@/libs/getCampgrounds"
 
-export default function CarPanel() {
+export default function CampgroundPanel() {
 
-    const [carResponse, setCarResponse] = useState(null)
+    const [campgroundResponse, setCampgroundResponse] = useState(null)
     useEffect(()=>{
         const fetchData = async() => {
-            const cars = await getCars()
-            setCarResponse(cars)
+            const campgrounds = await getCampgrounds()
+            setCampgroundResponse(campgrounds)
         }
         fetchData()
     },[])
@@ -20,13 +20,13 @@ export default function CarPanel() {
     const inputRef = useRef<HTMLInputElement>(null)
 
     //state variable, action
-    const compareReducer = (compareList: Set<string>, action: { type: string, carName: string }) => {
+    const compareReducer = (compareList: Set<string>, action: { type: string, campgroundName: string }) => {
         switch (action.type) {
             case 'add': {
-                return new Set(compareList.add(action.carName))
+                return new Set(compareList.add(action.campgroundName))
             }
             case 'remove': {
-                compareList.delete(action.carName)
+                compareList.delete(action.campgroundName)
                 return new Set(compareList)
             }
             default: return compareList
@@ -47,7 +47,7 @@ export default function CarPanel() {
     ]
     */
 
-    if(!carResponse) return (<p>Car Panel is Loading ...</p>)
+    if(!campgroundResponse) return (<p>Campground Panel is Loading ...</p>)
 
     return (
         <div>
@@ -57,19 +57,19 @@ export default function CarPanel() {
                 alignContent: "space-around", padding: "10px"
             }}>
                 {
-                    carResponse.data.map((carItem:Object) => (
-                        <Link href={`/car/${carItem.id}`} className="w-1/5">
-                            <ProductCard carName={carItem.model} imgSrc={carItem.picture}
-                                onCompare={(car: string) => dispatchCompare({ type: 'add', carName: car })}
+                    campgroundResponse.data.map((campgroundItem:Object) => (
+                        <Link href={`/campground/${campgroundItem.id}`} className="w-1/5">
+                            <ProductCard campgroundName={campgroundItem.name} imgSrc={campgroundItem.picture}
+                                onCompare={(campground: string) => dispatchCompare({ type: 'add', campgroundName: campground })}
                             />
                         </Link>
                     ))
                 }
             </div>
             <div className="w-full text-xl font-medium">Compare List: {compareList.size}</div>
-            {Array.from(compareList).map((car) => <div key={car}
-                onClick={() => dispatchCompare({ type: 'remove', carName: car })}>
-                {car}</div>)}
+            {Array.from(compareList).map((campground) => <div key={campground}
+                onClick={() => dispatchCompare({ type: 'remove', campgroundName: campground })}>
+                {campground}</div>)}
 
             <button className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-3 py-2
             text-white shadow-sm"

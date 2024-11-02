@@ -5,7 +5,6 @@ export default function Home() {
   return (
     <main>
       <Banner/>
-      <TravelCard></TravelCard>
     </main>
   );
 }

@@ -9,7 +9,7 @@ User Management Functionality
 
 Campground Management Functionality
 - Admin user can create / update / delete campground information
-- General user can view campground information
+- (done)General user can view campground information
 
 Booking Management Functionality
 - General user can create (book up to 3 nights)/view/edit/delete his/her own campground
