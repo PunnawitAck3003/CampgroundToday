@@ -4,10 +4,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Select, MenuItem, TextField } from "@mui/material";
 import { useState } from "react";
+import { Dayjs } from "dayjs"
 
-export default function LocationDateReserve() {
+export default function LocationDateReserve({onDateChange, onLocationChange}:{onDateChange:Function, onLocationChange:Function}) {
     // State to store the selected date
-    const [reserveDate, setReserveDate] = useState(null);
+    const [reserveDate, setReserveDate] = useState<Dayjs|null>(null);
     const [location, setLocation] = useState('BKK')
 
     return (
@@ -16,7 +17,7 @@ export default function LocationDateReserve() {
                 <DatePicker
                     label="Select Date"
                     value={reserveDate}
-                    onChange={(newValue) => setReserveDate(newValue)}
+                    onChange={(value) => {setReserveDate(value); onDateChange(value)}}
                     renderInput={(params) => <TextField {...params} className="bg-white" />}
                 />
             </LocalizationProvider>
@@ -26,7 +27,7 @@ export default function LocationDateReserve() {
                 name="location"
                 id="location"
                 value={location}
-                onChange={(e)=>setLocation(e.target.value)}
+                onChange={(e)=> {setLocation(e.target.value); onLocationChange(e.target.value)}}
                 className="h-[2em] w-[200px]"
             >
                 <MenuItem value="BKK">Bangkok</MenuItem>

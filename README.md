@@ -1,4 +1,13 @@
 Campground - JapanToday
-to Poopha YeYe, I just copy car rental to this github.
-Then I will modify many compoments to campground theme.
-Feel free to git clone, pull, something and do changes whatever you want!
+Frontend Part for Campground Booking website the supports the following functions:
+User Management Functionality
+• User Registration by specifying name, telephone number, email, and password
+• Registered user to Log-in with email and password
+• User to logout
+Campground Management Functionality
+• Admin user can create / update / delete campground information
+• General user can view campground information
+Booking Management Functionality
+• General user can create (book up to 3 nights)/view/edit/delete his/her own campground
+bookings
+• Admin user can create (book up to 3 nights)/view/edit/delete any campground bookings

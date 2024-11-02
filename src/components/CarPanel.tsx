@@ -1,10 +1,20 @@
 'use client'
-import { useReducer } from "react"
+import { useReducer, useState } from "react"
 import ProductCard from "./ProductCard"
 import Link from "next/link"
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
+import getCars from "@/libs/getCars"
 
 export default function CarPanel() {
+
+    const [carResponse, setCarResponse] = useState(null)
+    useEffect(()=>{
+        const fetchData = async() => {
+            const cars = await getCars()
+            setCarResponse(cars)
+        }
+        fetchData()
+    },[])
 
     const countRef = useRef(0)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -28,13 +38,16 @@ export default function CarPanel() {
     /**
      * Mock Data for demonstration Only
      */
-
+    /*
     const mockCarRepo = [
         { cid: "001", name: "Chulalongkorn Hospital", image: "/img/chula.jpg" },
         { cid: "002", name: "Rajavithi Hospital", image: "/img/rajavithi.jpg" },
         { cid: "003", name: "Thammasat University Hospital", image: "/img/thammasat.jpg" },
         { cid: "004", name: "vajira", image: "/img/vajira.jpg" },
     ]
+    */
+
+    if(!carResponse) return (<p>Car Panel is Loading ...</p>)
 
     return (
         <div>
@@ -44,16 +57,14 @@ export default function CarPanel() {
                 alignContent: "space-around", padding: "10px"
             }}>
                 {
-                    mockCarRepo.map((carItem) => (
-                        <Link href={`/car/${carItem.cid}`} className="w-1/5">
-                            <ProductCard carName={carItem.name} imgSrc={carItem.image}
+                    carResponse.data.map((carItem:Object) => (
+                        <Link href={`/car/${carItem.id}`} className="w-1/5">
+                            <ProductCard carName={carItem.model} imgSrc={carItem.picture}
                                 onCompare={(car: string) => dispatchCompare({ type: 'add', carName: car })}
                             />
                         </Link>
                     ))
                 }
-
-
             </div>
             <div className="w-full text-xl font-medium">Compare List: {compareList.size}</div>
             {Array.from(compareList).map((car) => <div key={car}
