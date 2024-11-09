@@ -4,8 +4,8 @@ import { Suspense } from "react"
 import { LinearProgress } from "@mui/material"
 import CampgroundPanel from "@/components/CampgroundPanel"
 
-export default function Campground(){
-    const campgrounds = getCampgrounds()
+export default async function Campground(){
+    const campgrounds = await getCampgrounds()
 
     return (
         <main className="text-center p-5">

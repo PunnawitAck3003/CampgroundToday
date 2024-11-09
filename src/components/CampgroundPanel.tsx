@@ -4,10 +4,11 @@ import ProductCard from "./ProductCard"
 import Link from "next/link"
 import { useRef, useEffect } from "react"
 import getCampgrounds from "@/libs/getCampgrounds"
+import { CampgroundItem, CampgroundJson } from "../../interfaces"
 
 export default function CampgroundPanel() {
 
-    const [campgroundResponse, setCampgroundResponse] = useState(null)
+    const [campgroundResponse, setCampgroundResponse] = useState<CampgroundJson|null>(null)
     useEffect(()=>{
         const fetchData = async() => {
             const campgrounds = await getCampgrounds()
@@ -57,7 +58,7 @@ export default function CampgroundPanel() {
                 alignContent: "space-around", padding: "10px"
             }}>
                 {
-                    campgroundResponse.data.map((campgroundItem:Object) => (
+                    campgroundResponse.data.map((campgroundItem:CampgroundItem) => (
                         <Link href={`/campground/${campgroundItem.id}`} className="w-1/5">
                             <ProductCard campgroundName={campgroundItem.name} imgSrc={campgroundItem.picture}
                                 onCompare={(campground: string) => dispatchCompare({ type: 'add', campgroundName: campground })}
