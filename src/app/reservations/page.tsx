@@ -12,13 +12,14 @@ import { useSession } from "next-auth/react";
 import getUserProfile from "@/libs/getUserProfile";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
 import { UserProfile, UserProfileResponse } from "../../../interfaces";
+import createBooking from "@/libs/createBooking";
 
 export default function Reservations() {
     const { data: session} = useSession();
     const urlParams = useSearchParams()
     const cid = urlParams.get('id')
     const name = urlParams.get('name')
-    const dispatch = useDispatch<AppDispatch>()
+    //const dispatch = useDispatch<AppDispatch>()
 
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [bookingDate, setBookingDate] = useState<Dayjs | null>(null)
@@ -41,17 +42,31 @@ export default function Reservations() {
 
     
 
-    const makeReservation = () => {
-        if (cid && name && bookingDate && checkoutDate && profile) {
-            const item: ReservationItem = {
+    const makeReservation = async () => {
+        if (cid && name && bookingDate && checkoutDate && profile && session?.user.token) {
+            /*const item: ReservationItem = {
                 campgroundId: cid,
                 campgroundName: name,
                 user: profile._id,
                 numOfDays: checkoutDate.diff(bookingDate, "day"),
                 bookingDate: dayjs(bookingDate).format("YYYY/MM/DD"),
                 checkoutDate: dayjs(checkoutDate).format("YYYY/MM/DD")
+            }*/
+            //dispatch(addReservation(item))
+            try {
+                const createdAt = dayjs().format("YYYY-MM-DD"); // Assuming you want the current date as the createdAt value
+                await createBooking(
+                    session.user.token,
+                    cid,
+                    dayjs(bookingDate).format("YYYY-MM-DD"),
+                    dayjs(checkoutDate).format("YYYY-MM-DD"),
+                    createdAt
+                );
+                // Optionally handle success (e.g., show a message, redirect, etc.)
+            } catch (error) {
+                // Handle error (e.g., show error message)
+                console.error("Error making reservation:", error);
             }
-            dispatch(addReservation(item))
         }
     }
     //interserting
