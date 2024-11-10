@@ -7,6 +7,7 @@ import { dbConnect } from "@/db/dbConnect";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import createCampground from "@/libs/createCampground";
+import deleteCampground from "@/libs/deleteCampground";
 //https://drive.google.com/uc?id=1Vsq3yGo0TbJtNnD-Q-GmIKEPhi774W_O
 export default async function DashboardPage(){
 
@@ -26,18 +27,6 @@ export default async function DashboardPage(){
 
         try{
             const campground = await createCampground(session.user.token, name,address,district,province,postalcode,tel,picture)
-            /*await dbConnect()
-            const car = await Campground.create({
-                "name": name,
-                "address": address,
-                "district": district,
-                "province": province,
-                "postalcode": postalcode,
-                "tel": tel,
-                "picture": picture
-            })*/
-
-
         }catch (error) {
             console.error("Error creating campground:", error);
         }
@@ -46,6 +35,25 @@ export default async function DashboardPage(){
         redirect("/campground")
 
     }
+
+    const ddeleteCampground = async(ddeleteCampgroundForm:FormData) => {
+        "use server"
+
+        const session = await getServerSession(authOptions)
+        if(!session || !session.user?.token) return null
+
+        const cid = (ddeleteCampgroundForm.get("campgroundid") as string) || "";
+
+        try{
+            //const campground = await createCampground(session.user.token, name,address,district,province,postalcode,tel,picture)
+            const delC = await deleteCampground(session.user.token, cid)
+        }catch (error) {
+            console.error("Error deleting campground:", error);
+        }
+
+        revalidateTag("campgrounds")
+        redirect("/campground")
+    }  
     
     const session = await getServerSession(authOptions)
     if(!session || !session.user?.token) return null
@@ -134,6 +142,25 @@ export default async function DashboardPage(){
                     </div>
                     <button type="submit" className="bg-blue-500 hover:bg-blue-700
                     text-white p-2 rounded">Add New Campground</button>
+                </form>
+                : null
+
+            }
+            {
+                (profile.data.role=="admin")?
+                <form action={ddeleteCampground} method="delete">
+                    <div className="text-xl text-blue-700">Delete Campground</div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="campgroundid">
+                            ID
+                        </label>
+                        <input type = 'text' required id="campgroundid" name = "campgroundid" placeholder="Campground ID"
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700
+                    text-white p-2 rounded">Delete Campground</button>
                 </form>
                 : null
 

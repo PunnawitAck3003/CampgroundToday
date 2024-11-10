@@ -10,7 +10,7 @@ export default function ReservationCart() {
         <>{
             carItems.map((reservationItem) => (
                 <div className="bg-slate-200 rounded px-5 mx-5 py-2 my-2"
-                    key={reservationItem.camgroundId}>
+                    key={reservationItem.campgroundId}>
                     <div className="text-xl">{reservationItem.campgroundName}</div>
                     <div className="text-sm">Booking Date {reservationItem.bookingDate}</div>
                     <div className="text-sm">Checkout Date {reservationItem.checkoutDate}</div>
