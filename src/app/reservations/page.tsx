@@ -1,57 +1,79 @@
 "use client"
 
-import LocationDateReserve from "@/components/LocationDateReserve";
+import DateReserve from "@/components/DateReserve";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { ReservationItem } from "../../../interfaces";
 import { addReservation } from "@/redux/features/cartSlice";
+import { useSession } from "next-auth/react";
+import getUserProfile from "@/libs/getUserProfile";
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
+import { UserProfile, UserProfileResponse } from "../../../interfaces";
 
 export default function Reservations() {
-
+    const { data: session} = useSession();
     const urlParams = useSearchParams()
     const cid = urlParams.get('id')
-    const model = urlParams.get('model')
-
+    const name = urlParams.get('name')
     const dispatch = useDispatch<AppDispatch>()
 
+    const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [bookingDate, setBookingDate] = useState<Dayjs | null>(null)
+    const [checkoutDate, setCheckoutDate] = useState<Dayjs | null>(null)
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            if (session?.user.token) {
+                const profileResponse: UserProfileResponse = await getUserProfile(session.user.token);
+                //const userProfile = await getUserProfile(session.user.token);
+                const userProfile = profileResponse.data
+                setProfile(userProfile);
+            }
+        };
+
+        if (session) {
+            fetchUserProfile();
+        }
+    }, [session]);
+
+    
+
     const makeReservation = () => {
-        if (cid && model && pickupDate && returnDate) {
+        if (cid && name && bookingDate && checkoutDate && profile) {
             const item: ReservationItem = {
-                carId: cid,
-                carModel: model,
-                numOfDays: returnDate.diff(pickupDate, "day"),
-                pickupDate: dayjs(pickupDate).format("YYYY/MM/DD"),
-                pickupLocation: pickupLocation,
-                returnDate: dayjs(returnDate).format("YYYY/MM/DD"),
-                returnLocation: returnLocation
+                campgroundId: cid,
+                campgroundName: name,
+                user: profile._id,
+                numOfDays: checkoutDate.diff(bookingDate, "day"),
+                bookingDate: dayjs(bookingDate).format("YYYY/MM/DD"),
+                checkoutDate: dayjs(checkoutDate).format("YYYY/MM/DD")
             }
             dispatch(addReservation(item))
         }
     }
 
-    const [pickupDate, setPickupDate] = useState<Dayjs | null>(null)
-    const [pickupLocation, setPickupLocation] = useState<string>('BKK')
-    const [returnDate, setReturnDate] = useState<Dayjs | null>(null)
-    const [returnLocation, setReturnLocation] = useState<string>('BKK')
+    if (!session) {
+        return <div>You must be logged in to make a reservation.</div>;
+    }
 
     return (
         <main className="w-[100%] flex flex-col items-center space-y-4">
             <div className="text-xl font-medium">New Reservation</div>
-            <div className="text-xl font-medium">Car: {model}</div>
+            <div className="text-xl font-medium">Campground: {name}</div>
 
             <div className="w-fit space-y-2">
-                <div className="text-md text-left text-gray-600">Pick-Up Date and Location</div>
-                <LocationDateReserve onDateChange={(value: Dayjs) => { setPickupDate(value) }} onLocationChange={(value: string) => { setPickupLocation(value) }} />
-                <div className="text-md text-left text-gray-600">Return Date and Location</div>
-                <LocationDateReserve onDateChange={(value: Dayjs) => { setReturnDate(value) }} onLocationChange={(value: string) => { setReturnLocation(value) }} />
+                <div className="text-md text-left text-gray-600">Booking Date</div>
+                <DateReserve onDateChange={(value: Dayjs) => { setBookingDate(value) }}  />
+                <div className="text-md text-left text-gray-600">Checkout Date</div>
+                <DateReserve onDateChange={(value: Dayjs) => { setCheckoutDate(value) }}  />
             </div>
 
             <button className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-3 py-2
             text-white shadow-sm" onClick={makeReservation}>
-                Reserve this Car
+                Book this Campground
             </button>
 
         </main>

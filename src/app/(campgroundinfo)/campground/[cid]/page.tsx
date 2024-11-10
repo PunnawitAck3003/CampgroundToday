@@ -31,7 +31,7 @@ export default async function CampgroundDetailPage({ params }: { params: { cid: 
                     <div className="text-md mx-5">District: {campgroundDetail.data.district}</div>
                     <div className="text-md mx-5">Province: {campgroundDetail.data.province}</div>
                     <div className="text-md mx-5">Tel. {campgroundDetail.data.tel}</div>
-                    <Link href={`/reservations?id=${params.cid}&model=${campgroundDetail.data.name}`}>
+                    <Link href={`/reservations?id=${params.cid}&name=${campgroundDetail.data.name}`}>
                         <button className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-3 py-2
                             text-white shadow-sm">
                             Make Reservation

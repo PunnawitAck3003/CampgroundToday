@@ -1,7 +1,7 @@
 export interface ReservationItem{
-  camgroundId: string
+  campgroundId: string
   campgroundName: string
-  user: number
+  user: string
   numOfDays: number
   bookingDate: string
   checkoutDate: string 
@@ -27,6 +27,20 @@ export interface CampgroundJson {
   data: CampgroundItem[]
 }
 
+export interface UserProfile {
+  _id: string;
+  name: string;
+  email: string;
+  tel: string;
+  role: string;
+  createdAt: string;
+  __v: number;
+}
+
+export interface UserProfileResponse {
+  success: boolean;
+  data: UserProfile;
+}
 // export interface ReservationItem{
 //     carId: string
 //     carModel: string

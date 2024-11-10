@@ -11,14 +11,26 @@ export default async function TopMenu(){
 
     return (
         <div className={styles.menucontainer}>
-            <Image src={'/img/logo1.jpg'} className={styles.logoimg} alt='logo'
-            width={0} height={0} sizes='100vh'/>
-            <TopMenuItem title='Select Campground' pageRef='/campground'/>
-            <TopMenuItem title='Reservetions' pageRef='/reservations'/>
+            <Link href="/">
+                <Image
+                    src={'/img/logo1.jpg'}
+                    className={styles.logoimg}
+                    alt='logo'
+                    width={0} height={0}
+                    sizes='100vh'
+                    style={{ cursor: 'pointer' }} // Optional: to show a pointer cursor
+                />
+            </Link>
+            <TopMenuItem title='Campground' pageRef='/campground'/>
+            {session && (
+                <TopMenuItem title='Reservetions' pageRef='/reservations'/>
+            )}
             <TopMenuItem title='About' pageRef='/about'/>
 
             <div className='flex flex row absolute right-0 h-full'>
-            <TopMenuItem title='My Reservations' pageRef='/cart'/>
+            {session && (
+                <TopMenuItem title='My Reservations' pageRef='/cart' />
+            )}
             {
                 session? <Link href="/api/auth/signout">
                     <div className='flex items-center h-full px-2 text-cyan-600 text-sm'>
