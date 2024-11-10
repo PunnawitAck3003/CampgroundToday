@@ -8,6 +8,7 @@ import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import createCampground from "@/libs/createCampground";
 import deleteCampground from "@/libs/deleteCampground";
+import updateCampground from "@/libs/updateCampground";
 //https://drive.google.com/uc?id=1Vsq3yGo0TbJtNnD-Q-GmIKEPhi774W_O
 export default async function DashboardPage(){
 
@@ -53,8 +54,34 @@ export default async function DashboardPage(){
 
         revalidateTag("campgrounds")
         redirect("/campground")
-    }  
+    }
     
+    const uupdateCampground = async(uupdateCampgroundForm:FormData) => {
+        "use server"
+
+        const session = await getServerSession(authOptions)
+        if(!session || !session.user?.token) return null
+        const cid = (uupdateCampgroundForm.get("campgroundid") as string) || "";
+        const name = (uupdateCampgroundForm.get("name") as string) || "";
+        const address = (uupdateCampgroundForm.get("address") as string) || "";
+        const district = (uupdateCampgroundForm.get("district") as string) || "";
+        const province = (uupdateCampgroundForm.get("province") as string) || "";
+        const postalcode = (uupdateCampgroundForm.get("postalcode") as string) || "";
+        const tel = (uupdateCampgroundForm.get("tel") as string) || "";
+        const picture = (uupdateCampgroundForm.get("picture") as string) || "";
+
+        try{
+            const campground = await updateCampground(session.user.token, cid, name,address,district,province,postalcode,tel,picture)
+        }catch (error) {
+            console.error("Error updating campground:", error);
+        }
+
+        revalidateTag("campgrounds")
+        revalidateTag("campground")
+        redirect("/campground")
+
+    }
+ 
     const session = await getServerSession(authOptions)
     if(!session || !session.user?.token) return null
 
@@ -148,7 +175,7 @@ export default async function DashboardPage(){
             }
             {
                 (profile.data.role=="admin")?
-                <form action={ddeleteCampground} method="delete">
+                <form action={ddeleteCampground} method="post">
                     <div className="text-xl text-blue-700">Delete Campground</div>
                     <div className="flex items-center w-1/2 my-2">
                         <label className="w-auto block text-gray-700 pr-4" htmlFor="campgroundid">
@@ -161,6 +188,88 @@ export default async function DashboardPage(){
                     </div>
                     <button type="submit" className="bg-blue-500 hover:bg-blue-700
                     text-white p-2 rounded">Delete Campground</button>
+                </form>
+                : null
+
+            }
+            {
+                (profile.data.role=="admin")?
+                <form action={uupdateCampground} method="post">
+                    <div className="text-xl text-blue-700">Update Campground</div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="campgroundid">
+                            ID
+                        </label>
+                        <input type = 'text' required id="campgroundid" name = "campgroundid" placeholder="Campground ID"
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="name">
+                            Name
+                        </label>
+                        <input type = 'text' required id="name" name = "name" placeholder="Campground Name"
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="address">
+                            Address
+                        </label>
+                        <input type = 'text' required id="address" name = "address" placeholder="Campground Address"
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="district">
+                            District
+                        </label>
+                        <input type = 'text' required id="district" name = "district" placeholder="Campground District"
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="province">
+                            Province
+                        </label>
+                        <input type = 'text' required id="province" name = "province" placeholder="Campground Province"
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="postalcode">
+                            Postalcode
+                        </label>
+                        <input type = 'text' required id="postalcode" name = "postalcode" placeholder="Campground Postalcode"
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="tel">
+                            Tel.
+                        </label>
+                        <input type = 'text' required id="tel" name = "tel" placeholder="Tel."
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <div className="flex items-center w-1/2 my-2">
+                        <label className="w-auto block text-gray-700 pr-4" htmlFor="picture">
+                            Picture
+                        </label>
+                        <input type = 'text' required id="picture" name = "picture" placeholder="URL"
+                        className='bg-white border-2 border-gray-200 rounded w-full p-2
+                        text-gray-700 focus:outline-none focus:border-blue-400'
+                        />
+                    </div>
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700
+                    text-white p-2 rounded">Update Campground</button>
                 </form>
                 : null
 
