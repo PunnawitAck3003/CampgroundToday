@@ -94,15 +94,15 @@ export default async function DashboardPage(){
             </div>
             <table className='table-auto border-seperate border-spacing-2'>
                 <tbody>
-                    <tr><td>Email</td> <td>{profile.data.email}</td></tr>
-                    <tr><td>Tel.</td> <td>{profile.data.tel}</td></tr>
-                    <tr><td>Member Since</td> <td>{createdAt.toString()}</td></tr>
+                    <tr><td>Email</td><td>{profile.data.email}</td></tr>
+                    <tr><td>Tel.</td><td>{profile.data.tel}</td></tr>
+                    <tr><td>Member Since</td><td>{createdAt.toString()}</td></tr>
                 </tbody>
             </table>
 
             {
                 (profile.data.role=="admin")?
-                <form action={addCampground} method="post">
+                <form action={addCampground}>
                     <div className="text-xl text-blue-700">Create Campground</div>
                     <div className="flex items-center w-1/2 my-2">
                         <label className="w-auto block text-gray-700 pr-4" htmlFor="name">
@@ -175,7 +175,7 @@ export default async function DashboardPage(){
             }
             {
                 (profile.data.role=="admin")?
-                <form action={ddeleteCampground} method="post">
+                <form action={ddeleteCampground}>
                     <div className="text-xl text-blue-700">Delete Campground</div>
                     <div className="flex items-center w-1/2 my-2">
                         <label className="w-auto block text-gray-700 pr-4" htmlFor="campgroundid">
@@ -194,7 +194,7 @@ export default async function DashboardPage(){
             }
             {
                 (profile.data.role=="admin")?
-                <form action={uupdateCampground} method="post">
+                <form action={uupdateCampground}>
                     <div className="text-xl text-blue-700">Update Campground</div>
                     <div className="flex items-center w-1/2 my-2">
                         <label className="w-auto block text-gray-700 pr-4" htmlFor="campgroundid">
