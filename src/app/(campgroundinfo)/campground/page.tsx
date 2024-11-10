@@ -16,9 +16,13 @@ export default async function Campground(){
             <CampgroundCatalog campgroundJson={campgrounds}/>
             </Suspense>
 
-            <hr className="my-10"/>
-            <h1 className="text-xl font-medium">TRY Client-side Campground Panel</h1>
-            <CampgroundPanel/>
+            
         </main>
     )
 }
+
+/*
+<hr className="my-10"/>
+            <h1 className="text-xl font-medium">TRY Client-side Campground Panel</h1>
+            <CampgroundPanel/>
+*/

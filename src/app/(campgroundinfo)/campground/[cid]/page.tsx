@@ -4,16 +4,6 @@ import Link from "next/link"
 
 export default async function CampgroundDetailPage({ params }: { params: { cid: string } }) {
     const campgroundDetail = await getCampground(params.cid)
-    /**
-     * Mock Data for demo
-     */
-    /*
-    const mockCarRepo = new Map()
-    mockCarRepo.set("001",{ cid: "001", name: "Chulalongkorn Hospital", image: "/img/chula.jpg" })
-    mockCarRepo.set("002",{ cid: "002", name: "Rajavithi Hospital", image: "/img/rajavithi.jpg" })
-    mockCarRepo.set("003",{ cid: "003", name: "Thammasat University Hospital", image: "/img/thammasat.jpg" })
-    mockCarRepo.set("004",{ cid: "004", name: "vajira", image: "/img/vajira.jpg" })
-    */
 
     return (
         <main className="text-center p-5">

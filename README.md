@@ -8,7 +8,7 @@ User Management Functionality
 - (done)User to logout
 
 Campground Management Functionality
-- Admin user can create / update / delete campground information
+- Admin user can create(done) / update / delete campground information
 - (done)General user can view campground information
 
 Booking Management Functionality

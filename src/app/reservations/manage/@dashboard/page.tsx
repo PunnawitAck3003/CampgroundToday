@@ -6,21 +6,27 @@ import Campground from "@/db/models/Campground";
 import { dbConnect } from "@/db/dbConnect";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import createCampground from "@/libs/createCampground";
 //https://drive.google.com/uc?id=1Vsq3yGo0TbJtNnD-Q-GmIKEPhi774W_O
 export default async function DashboardPage(){
 
-    const addCampground = async(addCarForm:FormData) => {
+    const addCampground = async(addCampgroundForm:FormData) => {
         "use server"
-        const name = addCarForm.get("name")
-        const address = addCarForm.get("address")
-        const district = addCarForm.get("district")
-        const province = addCarForm.get("province")
-        const postalcode = addCarForm.get("postalcode")
-        const tel = addCarForm.get("tel")
-        const picture = addCarForm.get("picture")
+
+        const session = await getServerSession(authOptions)
+        if(!session || !session.user?.token) return null
+
+        const name = (addCampgroundForm.get("name") as string) || "";
+        const address = (addCampgroundForm.get("address") as string) || "";
+        const district = (addCampgroundForm.get("district") as string) || "";
+        const province = (addCampgroundForm.get("province") as string) || "";
+        const postalcode = (addCampgroundForm.get("postalcode") as string) || "";
+        const tel = (addCampgroundForm.get("tel") as string) || "";
+        const picture = (addCampgroundForm.get("picture") as string) || "";
 
         try{
-            await dbConnect()
+            const campground = await createCampground(session.user.token, name,address,district,province,postalcode,tel,picture)
+            /*await dbConnect()
             const car = await Campground.create({
                 "name": name,
                 "address": address,
@@ -29,18 +35,20 @@ export default async function DashboardPage(){
                 "postalcode": postalcode,
                 "tel": tel,
                 "picture": picture
-            })
+            })*/
 
-        }catch(error){
-            console.log(error)
+
+        }catch (error) {
+            console.error("Error creating campground:", error);
         }
 
         revalidateTag("campgrounds")
         redirect("/campground")
 
     }
+    
     const session = await getServerSession(authOptions)
-    if(!session || !session.user.token) return null
+    if(!session || !session.user?.token) return null
 
     const profile = await getUserProfile(session.user.token)
     var createdAt = new Date(profile.data.createdAt)
@@ -59,7 +67,7 @@ export default async function DashboardPage(){
 
             {
                 (profile.data.role=="admin")?
-                <form action={addCampground}>
+                <form action={addCampground} method="post">
                     <div className="text-xl text-blue-700">Create Campground</div>
                     <div className="flex items-center w-1/2 my-2">
                         <label className="w-auto block text-gray-700 pr-4" htmlFor="name">
