@@ -44,7 +44,7 @@ export default async function CampgroundDetailPage({ params }: { params: { cid: 
                         <Link href={`/reservations/manage`}>
                         <button className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-3 py-2
                             text-white shadow-sm">
-                            Manage this campground
+                            Manage campground
                         </button>
                     </Link>
                     }

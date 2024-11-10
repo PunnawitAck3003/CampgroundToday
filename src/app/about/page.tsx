@@ -1,7 +1,9 @@
+import CampgroundCart from "@/components/CampgroundCart"
+
 export default function About(){
     return (
         <main>
-            <div>About us</div>
+            <CampgroundCart></CampgroundCart>
         </main>
-    );
+    )
 }
