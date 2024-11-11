@@ -16,7 +16,7 @@ Booking Management Functionality
 - (done)Admin user can create (book up to 3 nights)/view/edit/delete any campground bookings
 
 Task
-- Edit campground by button(easy way) (Ack)
+- (done)Edit campground by button(easy way) (Ack)
 - second sure Delete
 
 - Search/Filter/Query Campground card by name (or something) (Poopha)

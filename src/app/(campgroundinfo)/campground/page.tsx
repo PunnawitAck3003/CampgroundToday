@@ -3,6 +3,7 @@ import CampgroundCatalog from "@/components/CampgroundCatalog"
 import { Suspense } from "react"
 import { LinearProgress } from "@mui/material"
 import CampgroundPanel from "@/components/CampgroundPanel"
+import CampgroundCart from "@/components/CampgroundCart"
 
 export default async function Campground(){
     const campgrounds = await getCampgrounds()
@@ -13,7 +14,7 @@ export default async function Campground(){
                 Select Campground
             </h1>
             <Suspense fallback={<p>Loading ... <LinearProgress/></p>}>
-            <CampgroundCatalog campgroundJson={campgrounds}/>
+            <CampgroundCart></CampgroundCart>
             </Suspense>
 
             
@@ -25,4 +26,5 @@ export default async function Campground(){
 <hr className="my-10"/>
             <h1 className="text-xl font-medium">TRY Client-side Campground Panel</h1>
             <CampgroundPanel/>
+            <CampgroundCatalog campgroundJson={campgrounds}/>
 */
