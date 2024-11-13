@@ -42,7 +42,7 @@ export default function Banner() {
 
             <div className={styles.bannerText}>
                 <h1 className='text-4xl font-medium'>Campground Today</h1>
-                <h3 className='text-xl font-serif'>Get vaccinated today to protect yourself and community อิอิ!</h3>
+                <h3 className='text-xl font-serif'>Get ready to camp, explore, and make unforgettable memories.</h3>
             </div>
             {session ? (
                 <div className='z-30 absolute top-5 right-10 font-semibold text-cyan-800 text-xl'>

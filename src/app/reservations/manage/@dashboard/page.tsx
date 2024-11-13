@@ -103,7 +103,7 @@ export default async function DashboardPage(){
             {
                 (profile.data.role=="admin")?
                 <form action={addCampground}>
-                    <div className="text-xl text-blue-700">Create Campground</div>
+                    <div className="text-xl text-blue-700 py-3">Create Campground</div>
                     <div className="flex items-center w-1/2 my-2">
                         <label className="w-auto block text-gray-700 pr-4" htmlFor="name">
                             Name
@@ -176,7 +176,7 @@ export default async function DashboardPage(){
             {
                 (profile.data.role=="admin")?
                 <form action={ddeleteCampground}>
-                    <div className="text-xl text-blue-700">Delete Campground</div>
+                    <div className="text-xl text-blue-700 py-3">Delete Campground</div>
                     <div className="flex items-center w-1/2 my-2">
                         <label className="w-auto block text-gray-700 pr-4" htmlFor="campgroundid">
                             ID
@@ -195,7 +195,7 @@ export default async function DashboardPage(){
             {
                 (profile.data.role=="admin")?
                 <form action={uupdateCampground}>
-                    <div className="text-xl text-blue-700">Update Campground</div>
+                    <div className="text-xl text-blue-700 py-3">Update Campground</div>
                     <div className="flex items-center w-1/2 my-2">
                         <label className="w-auto block text-gray-700 pr-4" htmlFor="campgroundid">
                             ID
