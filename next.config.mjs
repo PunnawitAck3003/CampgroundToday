@@ -5,7 +5,8 @@ const nextConfig = {
             'drive.google.com',
             'photos.thedyrt.com',     // for the Mountain View Campground image
             'images.squarespace-cdn.com', // for the Lake Tahoe KOA images
-            'live.staticflickr.com'   // for the Acadia National Park Campground image
+            'live.staticflickr.com',   // for the Acadia National Park Campground image
+            'drive.usercontent.google.com'
         ]
     },
     async headers() {

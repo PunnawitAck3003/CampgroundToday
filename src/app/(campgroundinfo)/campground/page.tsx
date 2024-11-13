@@ -13,6 +13,7 @@ export default async function Campground(){
             <h1 className="texl-xl font-medium">
                 Select Campground
             </h1>
+            <div>Explore campgrounds in our catalog</div>
             <Suspense fallback={<p>Loading ... <LinearProgress/></p>}>
             <CampgroundCart></CampgroundCart>
             </Suspense>

@@ -165,6 +165,7 @@ export default function ReservationCart() {
                                 >
                                     Edit Dates
                                 </button>
+                                <div className="py-0.5"></div>
                                 <button
                                     className="block rounded-md bg-red-600 hover:bg-red-700 px-3 py-2 text-white shadow-sm"
                                     onClick={() => handleDelete(reservationItem._id)}

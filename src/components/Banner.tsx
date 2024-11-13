@@ -21,7 +21,7 @@ export default function Banner() {
             setTimeout(() => {
                 setIndex((prevIndex) => (prevIndex + 1) % covers.length);
                 setFade(true);
-            }, 500); // Delay for smooth transition
+            }, 250); // Delay for smooth transition
         }, 5000);
 
         // Cleanup interval on component unmount
