@@ -44,13 +44,16 @@ export default function CampgroundCart() {
     }, [session])
 
     const handleDelete = async (campgroundId: string) => {
-        if (!session?.user?.token) return
-        try {
-            await deleteCampground(session.user.token, campgroundId)
-            setCampgrounds(campgrounds.filter((campground) => campground.id !== campgroundId))
-        } catch (error) {
-            console.error("Error deleting campground:", error)
-            setErrorMessage("Failed to delete campground")
+        const confirmed = window.confirm("Are you sure you want to delete this campground?");
+        if (confirmed) {
+            if (!session?.user?.token) return
+            try {
+                await deleteCampground(session.user.token, campgroundId)
+                setCampgrounds(campgrounds.filter((campground) => campground.id !== campgroundId))
+            } catch (error) {
+                console.error("Error deleting campground:", error)
+                setErrorMessage("Failed to delete campground")
+            }
         }
     }
 
@@ -60,35 +63,41 @@ export default function CampgroundCart() {
     }
 
     const handleUpdate = async () => {
-        if (!session?.user?.token || !tempCampgroundData) return
-        try {
-            await updateCampground(
-                session.user.token,
-                tempCampgroundData.id,
-                tempCampgroundData.name,
-                tempCampgroundData.address,
-                tempCampgroundData.district,
-                tempCampgroundData.province,
-                tempCampgroundData.postalcode,
-                tempCampgroundData.tel,
-                tempCampgroundData.picture
-            )
-            setCampgrounds(
-                campgrounds.map((campground) =>
-                    campground.id === tempCampgroundData.id ? tempCampgroundData : campground
+        const confirmed = window.confirm("Are you sure you want to save changes to this campground?");
+        if (confirmed) {
+            if (!session?.user?.token || !tempCampgroundData) return
+            try {
+                await updateCampground(
+                    session.user.token,
+                    tempCampgroundData.id,
+                    tempCampgroundData.name,
+                    tempCampgroundData.address,
+                    tempCampgroundData.district,
+                    tempCampgroundData.province,
+                    tempCampgroundData.postalcode,
+                    tempCampgroundData.tel,
+                    tempCampgroundData.picture
                 )
-            )
-            setEditingCampground(null)
-        } catch (error) {
-            console.error("Error updating campground:", error)
-            setErrorMessage("Failed to update campground")
+                setCampgrounds(
+                    campgrounds.map((campground) =>
+                        campground.id === tempCampgroundData.id ? tempCampgroundData : campground
+                    )
+                )
+                setEditingCampground(null)
+            } catch (error) {
+                console.error("Error updating campground:", error)
+                setErrorMessage("Failed to update campground")
+            }
         }
-
     }
 
     if (isLoading) {
-        return <div>Loading campgrounds...</div>
-    }
+        return (
+          <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">
+            Loading campgrounds...
+          </div>
+        );
+      }
 
     if (errorMessage) {
         return <div>{errorMessage}</div>
