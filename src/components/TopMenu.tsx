@@ -7,6 +7,7 @@ import { Link } from '@mui/material';
 
 export default async function TopMenu() {
     const session = await getServerSession(authOptions);
+    if(!session) console.log("no session")
 
     return (
         <div className={styles.menucontainer}>
