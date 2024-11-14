@@ -18,6 +18,9 @@ export default function CampgroundCart() {
     const { data: session } = useSession()
     const [editingCampground, setEditingCampground] = useState<string | null>(null)
     const [tempCampgroundData, setTempCampgroundData] = useState<CampgroundItem | null>(null)
+    const [searchTermName, setSearchTermName] = useState('')
+    const [searchTermDistrict, setSearchTermDistrict] = useState('')
+    const [searchTermProvince, setSearchTermProvince] = useState('')
 
     useEffect(() => {
         const fetchCampgroundsAndUserProfile = async () => {
@@ -105,139 +108,190 @@ export default function CampgroundCart() {
             </div>
     }
 
-    return (
-        <div className="flex flex-wrap justify-center">
-            {campgrounds.map((campground) => {
-                const isEditing = editingCampground === campground.id
-                const Container = isEditing ? 'div' : Link
+    const filteredCampgrounds = campgrounds.filter(campground => {
+        // If no search queries, return all campgrounds
+        if ((searchTermName == "") && (searchTermDistrict == "") && (searchTermProvince == "")) {
+            return true;
+        }
+        // If any search query matches, return the campground that matches
+        else {
+            const nameMatches = campground.name.toLowerCase().includes(searchTermName.toLowerCase());
+            const districtMatches = campground.district.toLowerCase().includes(searchTermDistrict.toLowerCase());
+            const provinceMatches = campground.province.toLowerCase().includes(searchTermProvince.toLowerCase());
+            return nameMatches && districtMatches && provinceMatches;
 
-                return (
-                    <Container
-                        key={campground.id}
-                        href={`/campground/${campground.id}`}
-                        className="w-full sm:w-[50%] md:w-[30%] lg:w-[25%] p-2 sm:p-4 md:p-4 lg:p-2"
-                    >
-                        <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
-                            <div className="w-full h-48 relative">
-                                <Image
-                                    src={campground.picture}
-                                    alt={`${campground.name} Picture`}
-                                    fill
-                                    className="object-cover"
-                                />
+            // const nameMatches = searchTermName && campground.name.toLowerCase().includes(searchTermName.toLowerCase());
+            // const districtMatches = searchTermDistrict && campground.district.toLowerCase().includes(searchTermDistrict.toLowerCase());
+            // const provinceMatches = searchTermProvince && campground.province.toLowerCase().includes(searchTermProvince.toLowerCase());
+            // return nameMatches && districtMatches && provinceMatches;
+        }
+    });
+
+    return (
+        <div>
+            <div className="flex flex-wrap justify-center">
+                <input
+                    type="text"
+                    placeholder="Search by name."
+                    value={searchTermName}
+                    onChange={(e) => setSearchTermName(e.target.value)}
+                    className="search-input"
+                />
+                <input
+                    type="text"
+                    placeholder="Search by district."
+                    value={searchTermDistrict}
+                    onChange={(e) => setSearchTermDistrict(e.target.value)}
+                    className="search-input"
+                />
+                <input
+                    type="text"
+                    placeholder="Search by province."
+                    value={searchTermProvince}
+                    onChange={(e) => setSearchTermProvince(e.target.value)}
+                    className="search-input"
+                />
+                {/* <input
+                    type="text"
+                    placeholder="Search by name."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTermName(e.target.value)}
+                    className="search-input"
+                /> */}
+            </div>
+            <div className="flex flex-wrap justify-center">
+                {filteredCampgrounds.map((campground) => {
+                    const isEditing = editingCampground === campground.id
+                    const Container = isEditing ? 'div' : Link
+
+                    return (
+                        <Container
+                            key={campground.id}
+                            href={`/campground/${campground.id}`}
+                            className="w-full sm:w-[50%] md:w-[30%] lg:w-[25%] p-2 sm:p-4 md:p-4 lg:p-2"
+                        >
+                            <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
+                                <div className="w-full h-48 relative">
+                                    <Image
+                                        src={campground.picture}
+                                        alt={`${campground.name} Picture`}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="p-4">
+                                    {isEditing ? (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={tempCampgroundData?.name || ""}
+                                                onChange={(e) =>
+                                                    setTempCampgroundData({ ...tempCampgroundData!, name: e.target.value })
+                                                }
+                                                className="w-full border p-2 rounded"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={tempCampgroundData?.address || ""}
+                                                onChange={(e) =>
+                                                    setTempCampgroundData({ ...tempCampgroundData!, address: e.target.value })
+                                                }
+                                                className="w-full border p-2 mt-2 rounded"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={tempCampgroundData?.district || ""}
+                                                onChange={(e) =>
+                                                    setTempCampgroundData({ ...tempCampgroundData!, district: e.target.value })
+                                                }
+                                                className="w-full border p-2 mt-2 rounded"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={tempCampgroundData?.province || ""}
+                                                onChange={(e) =>
+                                                    setTempCampgroundData({ ...tempCampgroundData!, province: e.target.value })
+                                                }
+                                                className="w-full border p-2 mt-2 rounded"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={tempCampgroundData?.postalcode || ""}
+                                                onChange={(e) =>
+                                                    setTempCampgroundData({ ...tempCampgroundData!, postalcode: e.target.value })
+                                                }
+                                                className="w-full border p-2 mt-2 rounded"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={tempCampgroundData?.tel || ""}
+                                                onChange={(e) =>
+                                                    setTempCampgroundData({ ...tempCampgroundData!, tel: e.target.value })
+                                                }
+                                                className="w-full border p-2 mt-2 rounded"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={tempCampgroundData?.picture || ""}
+                                                onChange={(e) =>
+                                                    setTempCampgroundData({ ...tempCampgroundData!, picture: e.target.value })
+                                                }
+                                                className="w-full border p-2 mt-2 rounded"
+                                            />
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault() // Prevent navigation on save
+                                                    handleUpdate()
+                                                }}
+                                                className="w-full bg-green-600 text-white py-2 mt-2 rounded hover:bg-green-700"
+                                            >
+                                                Save Changes
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault() // Prevent navigation on cancel
+                                                    setEditingCampground(null)
+                                                    setTempCampgroundData(null)
+                                                }}
+                                                className="w-full bg-gray-500 text-white py-2 mt-2 rounded hover:bg-gray-600"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <h3 className="text-lg font-semibold">{campground.name}</h3>
+                                            <p className="text-sm text-gray-600">{campground.address}</p>
+                                            {userProfile?.role === "admin" && (
+                                                <>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault() // Prevent navigation on delete click
+                                                            handleDelete(campground.id)
+                                                        }}
+                                                        className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
+                                                    >
+                                                        Delete Campground
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault() // Prevent navigation on edit click
+                                                            startEditing(campground)
+                                                        }}
+                                                        className="w-full bg-blue-600 text-white py-2 mt-2 rounded hover:bg-blue-700"
+                                                    >
+                                                        Edit Campground
+                                                    </button>
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
                             </div>
-                            <div className="p-4">
-                                {isEditing ? (
-                                    <>
-                                        <input
-                                            type="text"
-                                            value={tempCampgroundData?.name || ""}
-                                            onChange={(e) =>
-                                                setTempCampgroundData({ ...tempCampgroundData!, name: e.target.value })
-                                            }
-                                            className="w-full border p-2 rounded"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={tempCampgroundData?.address || ""}
-                                            onChange={(e) =>
-                                                setTempCampgroundData({ ...tempCampgroundData!, address: e.target.value })
-                                            }
-                                            className="w-full border p-2 mt-2 rounded"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={tempCampgroundData?.district || ""}
-                                            onChange={(e) =>
-                                                setTempCampgroundData({ ...tempCampgroundData!, district: e.target.value })
-                                            }
-                                            className="w-full border p-2 mt-2 rounded"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={tempCampgroundData?.province || ""}
-                                            onChange={(e) =>
-                                                setTempCampgroundData({ ...tempCampgroundData!, province: e.target.value })
-                                            }
-                                            className="w-full border p-2 mt-2 rounded"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={tempCampgroundData?.postalcode || ""}
-                                            onChange={(e) =>
-                                                setTempCampgroundData({ ...tempCampgroundData!, postalcode: e.target.value })
-                                            }
-                                            className="w-full border p-2 mt-2 rounded"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={tempCampgroundData?.tel || ""}
-                                            onChange={(e) =>
-                                                setTempCampgroundData({ ...tempCampgroundData!, tel: e.target.value })
-                                            }
-                                            className="w-full border p-2 mt-2 rounded"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={tempCampgroundData?.picture || ""}
-                                            onChange={(e) =>
-                                                setTempCampgroundData({ ...tempCampgroundData!, picture: e.target.value })
-                                            }
-                                            className="w-full border p-2 mt-2 rounded"
-                                        />
-                                        <button
-                                            onClick={(e) => {
-                                                e.preventDefault() // Prevent navigation on save
-                                                handleUpdate()
-                                            }}
-                                            className="w-full bg-green-600 text-white py-2 mt-2 rounded hover:bg-green-700"
-                                        >
-                                            Save Changes
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                e.preventDefault() // Prevent navigation on cancel
-                                                setEditingCampground(null)
-                                                setTempCampgroundData(null)
-                                            }}
-                                            className="w-full bg-gray-500 text-white py-2 mt-2 rounded hover:bg-gray-600"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <h3 className="text-lg font-semibold">{campground.name}</h3>
-                                        <p className="text-sm text-gray-600">{campground.address}</p>
-                                        {userProfile?.role === "admin" && (
-                                            <>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.preventDefault() // Prevent navigation on delete click
-                                                        handleDelete(campground.id)
-                                                    }}
-                                                    className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
-                                                >
-                                                    Delete Campground
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.preventDefault() // Prevent navigation on edit click
-                                                        startEditing(campground)
-                                                    }}
-                                                    className="w-full bg-blue-600 text-white py-2 mt-2 rounded hover:bg-blue-700"
-                                                >
-                                                    Edit Campground
-                                                </button>
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </Container>
-                )
-            })}
+                        </Container>
+                    )
+                })}
+            </div>
         </div>
     )
 }

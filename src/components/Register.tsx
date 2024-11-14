@@ -2,7 +2,7 @@
 import { useState } from "react";
 import userRegister from "@/libs/userRegister";
 
-const RegisterForm = () => {
+export default function RegisterForm() {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
@@ -70,6 +70,4 @@ const RegisterForm = () => {
       </form>
     </div>
   );
-};
-
-export default RegisterForm;
+}

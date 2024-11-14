@@ -17,8 +17,6 @@ export default async function Campground(){
             <Suspense fallback={<p>Loading ... <LinearProgress/></p>}>
             <CampgroundCart></CampgroundCart>
             </Suspense>
-
-            
         </main>
     )
 }
