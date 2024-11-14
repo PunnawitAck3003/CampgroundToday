@@ -28,6 +28,7 @@ Task
 - test
 - general tailwind (Poopha) - light/dark mode
 
-- collect campground data (--Ack,Poopha collaborate)
+(--Ack,Poopha collaborate)
+- collect campground data 
 - slide
 - document
