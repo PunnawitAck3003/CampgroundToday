@@ -1,7 +1,7 @@
 import { CampgroundJson } from "../../interfaces";
 
 export default async function getCampgrounds(): Promise<CampgroundJson> {
-    const response = await fetch("https://campground-today-backend-yeye.vercel.app/api/v1/campgrounds", {next: {tags:['campgrounds']}});
+    const response = await fetch(`${process.env.BACKEND_URL}/api/v1/campgrounds`, {next: {tags:['campgrounds']}});
     
     if (!response.ok) {
         throw new Error("Failed to fetch campgrounds");

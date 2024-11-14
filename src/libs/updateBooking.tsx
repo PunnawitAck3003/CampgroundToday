@@ -1,5 +1,5 @@
 export default async function updateBooking(token: string,id: string,cbookingDate: string, ccheckoutDate: string, ccreatedAt: string) {
-    const response = await fetch(`https://campground-today-backend-yeye.vercel.app:443/api/v1/bookings/${id}`, {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/v1/bookings/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",

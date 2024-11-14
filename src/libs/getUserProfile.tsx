@@ -1,7 +1,7 @@
 import { UserProfileResponse } from "../../interfaces"; // Adjust the import path accordingly
 
 export default async function getUserProfile(token: string): Promise<UserProfileResponse> {
-    const url = "https://campground-today-backend-yeye.vercel.app:443/api/v1/auth/me";
+    const url = `${process.env.BACKEND_URL}/api/v1/auth/me`;
 
     try {
         const response = await fetch(url, {

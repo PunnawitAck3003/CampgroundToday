@@ -1,5 +1,5 @@
 export default async function createCampground(token: string, cName: string, cAddress: string, cDistrict: string, cProvince: string, cPostalcode: string, cTel: string, cPicture: string) {
-    const response = await fetch("https://campground-today-backend-yeye.vercel.app:443/api/v1/campgrounds", {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/v1/campgrounds`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

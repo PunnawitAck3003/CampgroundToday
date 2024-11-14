@@ -1,5 +1,5 @@
 export default async function userRegister(userName: string, userEmail: string, userPassword: string, userTel: string) {
-    const response = await fetch("https://campground-today-backend-yeye.vercel.app:443/api/v1/auth/register", {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/v1/auth/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
