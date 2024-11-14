@@ -49,39 +49,46 @@ export default function ReservationCart() {
     }, [session])
 
     const handleDelete = async (bookingId: string) => {
-        if (!session?.user?.token) return
-        try {
-            await deleteBooking(session.user.token, bookingId)
-            setBookings(bookings.filter((item) => item._id !== bookingId))
-        } catch (error) {
-            console.error("Error deleting booking:", error)
-            setError("Failed to delete booking")
+        const confirmed = window.confirm("Are you sure you want to delete this booking?");
+        if(confirmed){
+            if (!session?.user?.token) return
+            try {
+                await deleteBooking(session.user.token, bookingId)
+                setBookings(bookings.filter((item) => item._id !== bookingId))
+            } catch (error) {
+                console.error("Error deleting booking:", error)
+                setError("Failed to delete booking")
+            }
         }
+        
     }
 
     const handleUpdate = async (bookingId: string) => {
-        if (!session?.user?.token || !tempBookingDates[bookingId]) return
-        const { bookingDate, checkoutDate } = tempBookingDates[bookingId]
-        const createdAt = dayjs().format("YYYY-MM-DD")
+        const confirmed = window.confirm("Are you sure you want to update this booking?");
+        if(confirmed){
+            if (!session?.user?.token || !tempBookingDates[bookingId]) return
+            const { bookingDate, checkoutDate } = tempBookingDates[bookingId]
+            const createdAt = dayjs().format("YYYY-MM-DD")
 
-        try {
-            await updateBooking(
-                session.user.token,
-                bookingId,
-                bookingDate.format("YYYY-MM-DD"),
-                checkoutDate.format("YYYY-MM-DD"),
-                createdAt
-            )
-            setBookings(
-                bookings.map((item) =>
-                    item._id === bookingId ? { ...item, bookingDate: bookingDate.toISOString(), checkoutDate: checkoutDate.toISOString() } : item
+            try {
+                await updateBooking(
+                    session.user.token,
+                    bookingId,
+                    bookingDate.format("YYYY-MM-DD"),
+                    checkoutDate.format("YYYY-MM-DD"),
+                    createdAt
                 )
-            )
-            setEditing({ ...editing, [bookingId]: false })
-        } catch (error) {
-            console.error("Error updating booking:", error)
-            setError("Failed to update booking")
-        }
+                setBookings(
+                    bookings.map((item) =>
+                        item._id === bookingId ? { ...item, bookingDate: bookingDate.toISOString(), checkoutDate: checkoutDate.toISOString() } : item
+                    )
+                )
+                setEditing({ ...editing, [bookingId]: false })
+            } catch (error) {
+                console.error("Error updating booking:", error)
+                setError("Failed to update booking")
+            }
+        } 
     }
 
     const startEditing = (bookingId: string) => {
