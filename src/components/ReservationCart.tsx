@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState, useCallback, useMemo } from "react"
+import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { AllBookingJson, BookingItem, UserProfile } from "../../interfaces"
 import getBookings from "@/libs/getBookings"
@@ -7,7 +7,6 @@ import getUserProfile from "@/libs/getUserProfile"
 import deleteBooking from "@/libs/deleteBooking"
 import updateBooking from "@/libs/updateBooking"
 import dayjs, { Dayjs } from "dayjs"
-import BookingItemCard from "./BookingItemCard"
 
 export default function ReservationCart() {
     const { data: session } = useSession()
@@ -28,6 +27,7 @@ export default function ReservationCart() {
 
                     setUserProfile(profileData.data)
 
+                    // Filter bookings for non-admins to only show the user's own bookings
                     const filteredBookings = profileData.data.role === "admin"
                         ? bookingsData.data
                         : bookingsData.data.filter((item) => item.user === profileData.data._id)
@@ -48,23 +48,18 @@ export default function ReservationCart() {
         fetchBookingsAndUser()
     }, [session])
 
-    const handleDelete = useCallback(async (bookingId: string) => {
-        const confirmed = window.confirm("Are you sure you want to delete this booking?");
-        if(confirmed){
-            if (!session?.user?.token) return
-            try {
-                await deleteBooking(session.user.token, bookingId)
-                setBookings((prevBookings) => prevBookings.filter((item) => item._id !== bookingId))
-            } catch (error) {
-                console.error("Error deleting booking:", error)
-                setError("Failed to delete booking")
-            }
-            console.log("delete booking")
+    const handleDelete = async (bookingId: string) => {
+        if (!session?.user?.token) return
+        try {
+            await deleteBooking(session.user.token, bookingId)
+            setBookings(bookings.filter((item) => item._id !== bookingId))
+        } catch (error) {
+            console.error("Error deleting booking:", error)
+            setError("Failed to delete booking")
         }
-        
-    }, [session?.user?.token])
+    }
 
-    const handleUpdate = useCallback(async (bookingId: string) => {
+    const handleUpdate = async (bookingId: string) => {
         if (!session?.user?.token || !tempBookingDates[bookingId]) return
         const { bookingDate, checkoutDate } = tempBookingDates[bookingId]
         const createdAt = dayjs().format("YYYY-MM-DD")
@@ -77,62 +72,111 @@ export default function ReservationCart() {
                 checkoutDate.format("YYYY-MM-DD"),
                 createdAt
             )
-            setBookings((prevBookings) =>
-                prevBookings.map((item) =>
+            setBookings(
+                bookings.map((item) =>
                     item._id === bookingId ? { ...item, bookingDate: bookingDate.toISOString(), checkoutDate: checkoutDate.toISOString() } : item
                 )
             )
-            setEditing((prevEditing) => ({ ...prevEditing, [bookingId]: false }))
+            setEditing({ ...editing, [bookingId]: false })
         } catch (error) {
             console.error("Error updating booking:", error)
             setError("Failed to update booking")
         }
-    }, [session?.user?.token, tempBookingDates])
+    }
 
-    const startEditing = (bookingId: string, isEditing: boolean) => {
-        if (isEditing) {
-            const bookingItem = bookings.find((item) => item._id === bookingId)
-            if (bookingItem) {
-                setTempBookingDates({
-                    ...tempBookingDates,
-                    [bookingId]: {
-                        bookingDate: dayjs(bookingItem.bookingDate),
-                        checkoutDate: dayjs(bookingItem.checkoutDate),
-                    },
-                })
-            }
+    const startEditing = (bookingId: string) => {
+        const bookingItem = bookings.find((item) => item._id === bookingId)
+        if (bookingItem) {
+            setTempBookingDates({
+                ...tempBookingDates,
+                [bookingId]: {
+                    bookingDate: dayjs(bookingItem.bookingDate),
+                    checkoutDate: dayjs(bookingItem.checkoutDate),
+                },
+            })
+            setEditing({ ...editing, [bookingId]: true })
         }
-        setEditing((prevEditing) => ({ ...prevEditing, [bookingId]: isEditing }))
     }
 
     const handleDateChange = (bookingId: string, dateType: "bookingDate" | "checkoutDate", value: Dayjs) => {
-        setTempBookingDates((prev) => ({
-            ...prev,
+        setTempBookingDates({
+            ...tempBookingDates,
             [bookingId]: {
-                ...prev[bookingId],
+                ...tempBookingDates[bookingId],
                 [dateType]: value,
             },
-        }))
+        })
     }
 
     if (loading) return <div>Loading...</div>
     if (error) return <div>{error}</div>
 
     return (
-        <div>
-            {userProfile && bookings.map((reservationItem) => (
-                <BookingItemCard
-                    key={reservationItem._id}
-                    reservationItem={reservationItem}
-                    userProfile={userProfile}
-                    editing={editing}
-                    tempBookingDates={tempBookingDates}
-                    startEditing={startEditing}
-                    handleUpdate={handleUpdate}
-                    handleDelete={handleDelete}
-                    handleDateChange={handleDateChange}
-                />
-            ))}
-        </div>
+        <>
+            {bookings.map((reservationItem) => {
+                const bookingDate = dayjs(reservationItem.bookingDate).format("YYYY-MM-DD")
+                const checkoutDate = dayjs(reservationItem.checkoutDate).format("YYYY-MM-DD")
+                const durationInDays = Math.ceil(dayjs(reservationItem.checkoutDate).diff(dayjs(reservationItem.bookingDate), "day"))
+
+                return (
+                    <div className="bg-slate-200 rounded px-5 mx-5 py-2 my-2" key={reservationItem._id}>
+                        <div className="text-xl">{reservationItem.campground.name}</div>
+                        {
+                            userProfile?.role === "admin" && <div className="text-sm">Booked by: {reservationItem.user || "Unknown User"}</div>
+                        }
+                        
+                        <div className="text-sm">Booking Date: {bookingDate}</div>
+                        <div className="text-sm">Checkout Date: {checkoutDate}</div>
+                        <div className="text-md">Duration: {durationInDays} day(s)</div>
+                        {editing[reservationItem._id] ? (
+                            <>
+                                <input
+                                    type="date"
+                                    value={tempBookingDates[reservationItem._id].bookingDate.format("YYYY-MM-DD")}
+                                    onChange={(e) =>
+                                        handleDateChange(reservationItem._id, "bookingDate", dayjs(e.target.value))
+                                    }
+                                />
+                                <input
+                                    type="date"
+                                    value={tempBookingDates[reservationItem._id].checkoutDate.format("YYYY-MM-DD")}
+                                    onChange={(e) =>
+                                        handleDateChange(reservationItem._id, "checkoutDate", dayjs(e.target.value))
+                                    }
+                                />
+                                <button
+                                    className="block rounded-md bg-green-600 hover:bg-green-700 px-3 py-2 text-white shadow-sm"
+                                    onClick={() => handleUpdate(reservationItem._id)}
+                                >
+                                    Save Changes
+                                </button>
+                                <button
+                                    className="block rounded-md bg-gray-500 hover:bg-gray-600 px-3 py-2 text-white shadow-sm"
+                                    onClick={() => setEditing({ ...editing, [reservationItem._id]: false })}
+                                >
+                                    Cancel
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    className="block rounded-md bg-blue-600 hover:bg-blue-700 px-3 py-2 text-white shadow-sm"
+                                    onClick={() => startEditing(reservationItem._id)}
+                                >
+                                    Edit Dates
+                                </button>
+                                <div className="py-0.5"></div>
+                                <button
+                                    className="block rounded-md bg-red-600 hover:bg-red-700 px-3 py-2 text-white shadow-sm"
+                                    onClick={() => handleDelete(reservationItem._id)}
+                                >
+                                    Remove from Your Reservations
+                                </button>
+                            </>
+                        )}
+                    </div>
+                )
+            })}
+        </>
     )
 }
