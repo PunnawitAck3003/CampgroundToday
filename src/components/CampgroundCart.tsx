@@ -100,7 +100,9 @@ export default function CampgroundCart() {
       }
 
     if (errorMessage) {
-        return <div>{errorMessage}</div>
+        return <div className="flex justify-center items-center h-64 text-lg font-semibold text-red-600 animate-pulse">
+            {errorMessage}
+            </div>
     }
 
     return (

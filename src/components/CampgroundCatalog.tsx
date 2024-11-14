@@ -4,7 +4,7 @@ import Link from "next/link"
 import { CampgroundItem, CampgroundJson } from "../../interfaces"
 
 export default async function CampgroundCatalog({campgroundJson}:{campgroundJson:CampgroundJson}){
-    const campgroundJsonReady = await campgroundJson
+    const campgroundJsonReady = await campgroundJson//fetch from server
     return(
         <>
         Explore {campgroundJsonReady.count} campgrounds in our catalog
