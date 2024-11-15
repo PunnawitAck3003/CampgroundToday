@@ -15,7 +15,6 @@ export default function CampgroundDetailPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [isAdmin, setIsAdmin] = useState(false)
     const { cid } = useParams()
-    //const cid = router.query.cid as string // Use router to get the "cid" parameter
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,43 +43,68 @@ export default function CampgroundDetailPage() {
         if (cid) fetchData()
     }, [cid, session, router])
 
-    if (isLoading) return <div>Loading...</div>
-    if (!campgroundDetail) return <div>Campground details not found.</div>
+    if (isLoading) return <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">Loading campground details...</div>
+    if (!campgroundDetail) return <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">Campground details not found.</div>
 
     return (
-        <main className="text-center p-5">
-            <h1 className="text-lg font-medium mb-5">{campgroundDetail.name}</h1>
+        <main className="p-5 max-w-7xl mx-auto text-center">
+            <h1 className="text-3xl font-semibold text-gray-800 mb-5">{campgroundDetail.name}</h1>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-center my-5">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-start my-5 space-y-5 sm:space-y-0 sm:space-x-8">
+                {/* Campground Image */}
                 <Image
                     src={campgroundDetail.picture}
                     alt={`${campgroundDetail.name} Image`}
                     width={0}
                     height={0}
                     sizes="100vw"
-                    className="rounded-lg w-full sm:w-[30%] mb-5 sm:mb-0"
+                    className="rounded-lg w-full sm:w-[35%] h-auto mb-5 sm:mb-0 shadow-lg"
                 />
 
-                <div className="text-md mx-5 text-left space-y-2">
-                    <div className="font-semibold">{campgroundDetail.name}</div>
-                    <div>Address: {campgroundDetail.address}</div>
-                    <div>District: {campgroundDetail.district}</div>
-                    <div>Province: {campgroundDetail.province}</div>
-                    <div>Tel: {campgroundDetail.tel}</div>
+                {/* Campground Details */}
+                <div className="text-lg sm:text-md text-gray-700 space-y-4 sm:w-1/2 mx-5">
+                    <div className="font-semibold text-xl">{campgroundDetail.name}</div>
 
+                    <table className="table-auto border-collapse w-full text-left mb-8">
+                        <tbody>
+                            <tr>
+                                <td className="py-2 px-4 font-medium text-gray-700">Address:</td>
+                                <td className="py-2 px-4">{campgroundDetail.address}</td>
+                            </tr>
+                            <tr>
+                                <td className="py-2 px-4 font-medium text-gray-700">District:</td>
+                                <td className="py-2 px-4">{campgroundDetail.district}</td>
+                            </tr>
+                            <tr>
+                                <td className="py-2 px-4 font-medium text-gray-700">Province:</td>
+                                <td className="py-2 px-4">{campgroundDetail.province}</td>
+                            </tr>
+                            <tr>
+                                <td className="py-2 px-4 font-medium text-gray-700">Postal code:</td>
+                                <td className="py-2 px-4">{campgroundDetail.postalcode}</td>
+                            </tr>
+                            <tr>
+                                <td className="py-2 px-4 font-medium text-gray-700">Tel.:</td>
+                                <td className="py-2 px-4">{campgroundDetail.tel}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    {/* Reservation Button */}
                     <Link
                         href={`/reservations?id=${campgroundDetail.id}&name=${campgroundDetail.name}`}
-                        className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-3 py-2 text-white shadow-sm mt-5"
+                        className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-4 py-2 text-white shadow-md mt-5 transition-all duration-200"
                     >
                         Make Reservation
                     </Link>
 
+                    {/* Admin Management */}
                     {isAdmin && (
                         <>
                             <div className="text-md font-semibold">ID: {campgroundDetail.id}</div>
                             <Link
-                                href={`/reservations/manage`}
-                                className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-3 py-2 text-white shadow-sm mt-2"
+                                href={`/manage`}
+                                className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-4 py-2 text-white shadow-md mt-2 transition-all duration-200"
                             >
                                 Manage Campground
                             </Link>

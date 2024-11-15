@@ -96,16 +96,16 @@ export default function CampgroundCart() {
 
     if (isLoading) {
         return (
-          <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">
-            Loading campgrounds...
-          </div>
+            <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">
+                Loading campgrounds...
+            </div>
         );
-      }
+    }
 
     if (errorMessage) {
         return <div className="flex justify-center items-center h-64 text-lg font-semibold text-red-600 animate-pulse">
             {errorMessage}
-            </div>
+        </div>
     }
 
     const filteredCampgrounds = campgrounds.filter(campground => {
@@ -129,36 +129,38 @@ export default function CampgroundCart() {
 
     return (
         <div>
-            <div className="flex flex-wrap justify-center">
+            <div className="flex flex-wrap justify-center space-x-4 space-y-4 md:space-y-0">
                 <input
                     type="text"
                     placeholder="Search by name."
                     value={searchTermName}
                     onChange={(e) => setSearchTermName(e.target.value)}
-                    className="search-input"
+                    className="search-input p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
                 />
                 <input
                     type="text"
                     placeholder="Search by district."
                     value={searchTermDistrict}
                     onChange={(e) => setSearchTermDistrict(e.target.value)}
-                    className="search-input"
+                    className="search-input p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
                 />
                 <input
                     type="text"
                     placeholder="Search by province."
                     value={searchTermProvince}
                     onChange={(e) => setSearchTermProvince(e.target.value)}
-                    className="search-input"
+                    className="search-input p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
                 />
-                {/* <input
-                    type="text"
-                    placeholder="Search by name."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTermName(e.target.value)}
-                    className="search-input"
-                /> */}
+                {userProfile?.role == "admin" &&
+                    <Link
+                        href={`/manage`}
+                        className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-4 py-2 text-white shadow-md mt-5 transition-all duration-200"
+                    >
+                        Manage Campground
+                    </Link>
+                }
             </div>
+
             <div className="flex flex-wrap justify-center">
                 {filteredCampgrounds.map((campground) => {
                     const isEditing = editingCampground === campground.id

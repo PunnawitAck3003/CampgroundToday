@@ -1,65 +1,72 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { useSession } from 'next-auth/react';
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 export default function Banner() {
-    const covers = ['/img/campground1.jpg', '/img/campground3.jpg'];
+    const covers = ["/img/campground1.jpg", "/img/campground3.jpg"];
     const [index, setIndex] = useState(0);
     const [fade, setFade] = useState(true);
     const router = useRouter();
 
     const { data: session } = useSession();
-    console.log(`Hi ${session?.user._id}`);
-    //console.log(session?.user.token);
 
-    // Automatically change the image every 5 seconds
     useEffect(() => {
         const interval = setInterval(() => {
             setFade(false);
             setTimeout(() => {
                 setIndex((prevIndex) => (prevIndex + 1) % covers.length);
                 setFade(true);
-            }, 250); // Delay for smooth transition
+            }, 250);
         }, 5000);
 
-        // Cleanup interval on component unmount
         return () => clearInterval(interval);
     }, [covers.length]);
 
     return (
         <div
-            className="relative w-full h-[500px] overflow-hidden cursor-pointer"
-            onClick={() => { setIndex(index + 1); }}
+            className="relative w-full overflow-hidden cursor-pointer shadow-lg border border-green-600 rounded-lg h-[300px] md:h-[400px] lg:h-[500px]"
+            onClick={() => setIndex(index + 1)}
         >
-            <div className={`transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`transition-opacity duration-300 ${fade ? "opacity-100" : "opacity-0"}`}>
                 <Image
                     src={covers[index % covers.length]}
-                    alt='banner'
+                    alt="banner"
                     fill={true}
                     priority
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: "cover" }}
                 />
             </div>
 
-            <div className="absolute inset-0 flex items-end justify-start bg-black bg-opacity-5 text-white z-10 p-5">
-                <div>
-                    <h1 className="text-4xl font-medium">Campground Today</h1>
-                    <h3 className="text-xl font-serif mt-2">Get ready to camp, explore, and make unforgettable memories.</h3>
+            {/* Overlay with Text */}
+            <div className="absolute inset-0 flex flex-col items-start justify-end bg-gradient-to-t from-black via-transparent to-transparent text-white z-10 p-4 md:p-5 ">
+                <div className="mb-20 md:mb-0 mr-5">
+                    <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold">Campground Today</h1>
+                    <h3 className="text-sm md:text-lg lg:text-xl font-serif mt-2 text-gray-200">
+                        Get ready to camp, explore, and make unforgettable memories.
+                    </h3>
                 </div>
             </div>
 
 
-            {session ? (
-                <div className="absolute top-5 right-10 font-semibold text-white text-xl z-30">
+            {/* Session Greeting */}
+            {session && (
+                <div className="absolute top-5 right-10 ml-5 font-semibold text-white text-base md:text-lg lg:text-xl z-30">
                     Welcome {session.user?.name}
                 </div>
-            ) : null}
+            )}
 
+            {/* Call to Action Button */}
             <button
-                className="bg-white text-cyan-600 border border-cyan-600 font-semibold py-2 px-4 m-2 rounded z-30 absolute bottom-5 right-5 hover:bg-cyan-600 hover:text-white hover:border-transparent transition duration-200"
-                onClick={(e) => { e.stopPropagation(); router.push('/campground'); }}
+                className="bg-green-700 text-white border border-transparent
+            ml-2 font-semibold py-1 px-3 md:py-2 md:px-4 lg:py-2 lg:px-4
+            rounded-lg z-30 absolute bottom-2 right-2 md:bottom-5 md:right-5
+            hover:bg-white hover:text-green-700 hover:border-green-700 transition duration-200 text-xs md:text-base lg:text-lg"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    router.push("/campground");
+                }}
             >
                 Check Campground NOW
             </button>

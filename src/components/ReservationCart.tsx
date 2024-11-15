@@ -115,8 +115,8 @@ export default function ReservationCart() {
         })
     }
 
-    if (loading) return <div>Loading...</div>
-    if (error) return <div>{error}</div>
+    if (loading) return <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">Loading reservations...</div>
+    if (error) return <div className="flex justify-center items-center h-64 text-lg font-semibold text-red-600 animate-pulse">{error}</div>
 
     return (
         <>

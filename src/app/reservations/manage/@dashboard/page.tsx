@@ -1,15 +1,12 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
 import getUserProfile from "@/libs/getUserProfile";
-import Car from "@/db/models/Car";
-import Campground from "@/db/models/Campground";
-import { dbConnect } from "@/db/dbConnect";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import createCampground from "@/libs/createCampground";
 import deleteCampground from "@/libs/deleteCampground";
 import updateCampground from "@/libs/updateCampground";
-//https://drive.google.com/uc?id=1Vsq3yGo0TbJtNnD-Q-GmIKEPhi774W_O
+
 export default async function DashboardPage(){
 
     const addCampground = async(addCampgroundForm:FormData) => {
