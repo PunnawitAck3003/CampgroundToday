@@ -105,10 +105,10 @@ export default async function CampgroundManage() {
 
 
     return (
-        <main className="bg-gray-100 p-8 rounded-md shadow-md max-w-lg mx-auto">
+        <main className="bg-gray-100 p-8 rounded-md shadow-md mx-auto">
             <div className="text-3xl font-bold text-gray-800 mb-6">{profile.data.name}</div>
 
-            <table className="table-auto border-collapse w-full text-left mb-8">
+            <table className="table-auto border-collapse text-left mb-8">
                 <tbody>
                     <tr>
                         <td className="py-2 px-4 font-medium text-gray-700">Email:</td>
@@ -126,15 +126,20 @@ export default async function CampgroundManage() {
             </table>
 
             {profile.data.role === "admin" && (
-                <>
+                <div className="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
                     {/* Add Campground Form */}
-                    <form action={addCampground} className="mb-8 p-6 bg-white rounded-md shadow-md max-w-lg mx-auto">
-                        <h2 className="text-xl font-semibold text-blue-600 mb-4">Create Campground</h2>
+                    <form
+                        action={addCampground}
+                        className="flex-1 p-6 bg-white rounded-md shadow-md"
+                    >
+                        <h2 className="text-xl font-semibold text-blue-600 mb-4">
+                            Create Campground
+                        </h2>
                         {renderInput("name", "Campground Name")}
                         {renderInput("address", "Campground Address")}
                         {renderInput("district", "Campground District")}
                         {renderInput("province", "Campground Province")}
-                        {renderInput("postalcode", "Campground Postalcode")}
+                        {renderInput("postalcode", "Campground Postal Code")}
                         {renderInput("tel", "Telephone")}
                         {renderInput("picture", "Picture URL")}
                         <button
@@ -146,8 +151,13 @@ export default async function CampgroundManage() {
                     </form>
 
                     {/* Delete Campground Form */}
-                    <form action={ddeleteCampground} className="mb-8 p-6 bg-white rounded-md shadow-md max-w-lg mx-auto">
-                        <h2 className="text-xl font-semibold text-blue-600 mb-4">Delete Campground</h2>
+                    <form
+                        action={ddeleteCampground}
+                        className="flex-1 p-6 bg-white rounded-md shadow-md"
+                    >
+                        <h2 className="text-xl font-semibold text-red-600 mb-4">
+                            Delete Campground
+                        </h2>
                         {renderInput("campgroundid", "Campground ID")}
                         <button
                             type="submit"
@@ -158,14 +168,19 @@ export default async function CampgroundManage() {
                     </form>
 
                     {/* Update Campground Form */}
-                    <form action={uupdateCampground} className="p-6 bg-white rounded-md shadow-md max-w-lg mx-auto">
-                        <h2 className="text-xl font-semibold text-blue-600 mb-4">Update Campground</h2>
+                    <form
+                        action={uupdateCampground}
+                        className="flex-1 p-6 bg-white rounded-md shadow-md"
+                    >
+                        <h2 className="text-xl font-semibold text-green-600 mb-4">
+                            Update Campground
+                        </h2>
                         {renderInput("campgroundid", "Campground ID")}
                         {renderInput("name", "Campground Name")}
                         {renderInput("address", "Campground Address")}
                         {renderInput("district", "Campground District")}
                         {renderInput("province", "Campground Province")}
-                        {renderInput("postalcode", "Campground Postalcode")}
+                        {renderInput("postalcode", "Campground Postal Code")}
                         {renderInput("tel", "Telephone")}
                         {renderInput("picture", "Picture URL")}
                         <button
@@ -175,7 +190,7 @@ export default async function CampgroundManage() {
                             Update Campground
                         </button>
                     </form>
-                </>
+                </div>
             )}
         </main>
     );
