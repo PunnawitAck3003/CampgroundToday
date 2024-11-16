@@ -1,50 +1,56 @@
-"use client"
-import Image from "next/image"
-import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import getCampground from "@/libs/getCampground"
-import Link from "next/link"
-import { useSession } from "next-auth/react"
-import getUserProfile from "@/libs/getUserProfile"
-import { CampgroundItem } from "../../../../../interfaces"
+"use client";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import getCampground from "@/libs/getCampground";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import getUserProfile from "@/libs/getUserProfile";
+import { CampgroundItem } from "../../../../../interfaces";
 
 export default function CampgroundDetailPage() {
-    const router = useRouter()
-    const { data: session } = useSession() // Client-side session handling
-    const [campgroundDetail, setCampgroundDetail] = useState<CampgroundItem | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const [isAdmin, setIsAdmin] = useState(false)
-    const { cid } = useParams()
+    const { data: session } = useSession(); // Client-side session handling
+    const [campgroundDetail, setCampgroundDetail] = useState<CampgroundItem | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const { cid } = useParams();
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!session || !session.user?.token) {
-                router.push("/login") // Redirect if no session
-                return
-            }
-
-            setIsLoading(true)
+            setIsLoading(true);
             try {
-                const id = Array.isArray(cid) ? cid[0] : cid // Ensure `cid` is a string
-                if (!id) return
+                const id = Array.isArray(cid) ? cid[0] : cid; // Ensure `cid` is a string
+                if (!id) return;
 
-                const campgroundData = await getCampground(id)
-                setCampgroundDetail(campgroundData.data)
+                const campgroundData = await getCampground(id);
+                setCampgroundDetail(campgroundData.data);
 
-                const profile = await getUserProfile(session.user.token)
-                setIsAdmin(profile.data.role === "admin")
+                if (session?.user?.token) {
+                    const profile = await getUserProfile(session.user.token);
+                    setIsAdmin(profile.data.role === "admin");
+                }
             } catch (error) {
-                console.error("Error fetching campground details:", error)
+                console.error("Error fetching campground details:", error);
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
-        }
+        };
 
-        if (cid) fetchData()
-    }, [cid, session, router])
+        if (cid) fetchData();
+    }, [cid, session]);
 
-    if (isLoading) return <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">Loading campground details...</div>
-    if (!campgroundDetail) return <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">Campground details not found.</div>
+    if (isLoading)
+        return (
+            <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">
+                Loading campground details...
+            </div>
+        );
+    if (!campgroundDetail)
+        return (
+            <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">
+                Campground details not found.
+            </div>
+        );
 
     return (
         <main className="p-5 max-w-7xl mx-auto text-center">
@@ -91,12 +97,14 @@ export default function CampgroundDetailPage() {
                     </table>
 
                     {/* Reservation Button */}
-                    <Link
-                        href={`/reservations?id=${campgroundDetail.id}&name=${campgroundDetail.name}`}
-                        className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-4 py-2 text-white shadow-md mt-5 transition-all duration-200"
-                    >
-                        Make Reservation
-                    </Link>
+                    {session && (
+                        <Link
+                            href={`/reservations?id=${campgroundDetail.id}&name=${campgroundDetail.name}`}
+                            className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-4 py-2 text-white shadow-md mt-5 transition-all duration-200"
+                        >
+                            Make Reservation
+                        </Link>
+                    )}
 
                     {/* Admin Management */}
                     {isAdmin && (
@@ -113,5 +121,5 @@ export default function CampgroundDetailPage() {
                 </div>
             </div>
         </main>
-    )
+    );
 }

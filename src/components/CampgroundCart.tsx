@@ -24,21 +24,18 @@ export default function CampgroundCart() {
 
     useEffect(() => {
         const fetchCampgroundsAndUserProfile = async () => {
-            if (session?.user?.token) {
-                try {
-                    const campgroundData = await getCampgrounds()
-                    setCampgrounds(campgroundData.data)
+            try {
+                const campgroundData = await getCampgrounds()
+                setCampgrounds(campgroundData.data)
 
+                if (session?.user?.token) {
                     const profileData = await getUserProfile(session.user.token)
                     setUserProfile(profileData.data)
-                    setIsLoading(false)
-                } catch (error) {
-                    console.error("Error fetching campgrounds or user profile:", error)
-                    setErrorMessage("Failed to fetch campgrounds or user profile")
-                    setIsLoading(false)
                 }
-            } else {
-                setErrorMessage("You must be logged in to view campgrounds")
+                setIsLoading(false)
+            } catch (error) {
+                console.error("Error fetching campgrounds or user profile:", error)
+                setErrorMessage("Failed to fetch campgrounds or user profile")
                 setIsLoading(false)
             }
         }
