@@ -260,7 +260,7 @@ export default function CampgroundCart() {
                                     ) : (
                                         <>
                                             <h3 className="text-lg font-semibold">{campground.name}</h3>
-                                            <p className="text-sm text-gray-600">{campground.address}</p>
+                                            <p className="text-sm text-gray-600">{`${campground.district}, ${campground.province}`}</p>
                                             {userProfile?.role === "admin" && (
                                                 <>
                                                     <button
@@ -268,7 +268,7 @@ export default function CampgroundCart() {
                                                             e.preventDefault() // Prevent navigation on delete click
                                                             handleDelete(campground.id)
                                                         }}
-                                                        className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
+                                                        className="w-full bg-red-600 text-white py-2 mt-1 rounded hover:bg-red-700"
                                                     >
                                                         Delete Campground
                                                     </button>
