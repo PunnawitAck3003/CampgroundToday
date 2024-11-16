@@ -8,7 +8,6 @@ import getUserProfile from "@/libs/getUserProfile"
 import deleteBooking from "@/libs/deleteBooking"
 import updateBooking from "@/libs/updateBooking"
 import dayjs, { Dayjs } from "dayjs"
-import Campground from "@/app/(campgroundinfo)/campground/page"
 
 export default function ReservationCart() {
     const { data: session } = useSession()
@@ -32,7 +31,7 @@ export default function ReservationCart() {
                     const bookingsData: AllBookingJson = await getBookings(session.user.token)
                     const profileData = await getUserProfile(session.user.token)
                     setUserProfile(profileData.data)
-                    const campgroundData = await getCampgrounds()
+                    const campgroundData: CampgroundJson = await getCampgrounds()
                     setCampgrounds(campgroundData.data)
 
                     // Filter bookings for non-admins to only show the user's own bookings
