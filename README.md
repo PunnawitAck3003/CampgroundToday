@@ -17,12 +17,11 @@ Booking Management Functionality
 
 Task
 (Poopha)
-- admin booking seperate from all booking
+- search by date
 - About us (Chat-gpt Poopha)
 
 (Ack)
-- test
-- general tailwind (Poopha) - light/dark mode
+- real campground
 
 (--Ack,Poopha collaborate)
 - collect campground data 
