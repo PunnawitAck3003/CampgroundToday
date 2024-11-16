@@ -1,21 +1,28 @@
 "use client"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
-import { AllBookingJson, BookingItem, UserProfile } from "../../interfaces"
+import { AllBookingJson, BookingItem, UserProfile, CampgroundJson, CampgroundItem  } from "../../interfaces"
 import getBookings from "@/libs/getBookings"
+import getCampgrounds from "@/libs/getCampgrounds"
 import getUserProfile from "@/libs/getUserProfile"
 import deleteBooking from "@/libs/deleteBooking"
 import updateBooking from "@/libs/updateBooking"
 import dayjs, { Dayjs } from "dayjs"
+import Campground from "@/app/(campgroundinfo)/campground/page"
 
 export default function ReservationCart() {
     const { data: session } = useSession()
     const [bookings, setBookings] = useState<BookingItem[]>([])
+    const [campgrounds, setCampgrounds] = useState<CampgroundItem[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
     const [editing, setEditing] = useState<{ [key: string]: boolean }>({})
     const [tempBookingDates, setTempBookingDates] = useState<{ [key: string]: { bookingDate: Dayjs; checkoutDate: Dayjs } }>({})
+    const [searchTermName, setSearchTermName] = useState('')
+    const [searchTermUserID, setSearchTermUserID] = useState("")
+    // const [searchTermStartDate, setsearchTermStartDate] = useState<Dayjs|null>(null);
+    // const [searchTermEndDate, setsearchTermEndDate] = useState<Dayjs|null>(null);
 
     useEffect(() => {
         const fetchBookingsAndUser = async () => {
@@ -24,15 +31,20 @@ export default function ReservationCart() {
                     setLoading(true)
                     const bookingsData: AllBookingJson = await getBookings(session.user.token)
                     const profileData = await getUserProfile(session.user.token)
-
                     setUserProfile(profileData.data)
+                    const campgroundData = await getCampgrounds()
+                    setCampgrounds(campgroundData.data)
 
                     // Filter bookings for non-admins to only show the user's own bookings
                     const filteredBookings = profileData.data.role === "admin"
                         ? bookingsData.data
                         : bookingsData.data.filter((item) => item.user === profileData.data._id)
-
                     setBookings(filteredBookings)
+                    
+                    // Filter campground for to only show the user's own bookings
+                    // const userCampground = campgrounds.filter((item) => item._id === profileData.data._id)
+                    // setCampgrounds(userCampground)
+                    
                 } catch (error) {
                     console.error("Error fetching bookings or user profile:", error)
                     setError("Failed to fetch bookings or user profile")
@@ -115,12 +127,47 @@ export default function ReservationCart() {
         })
     }
 
+    const reservationItemForCurrentUser = bookings.filter(userBooking => {
+        if ((searchTermName === "") && (searchTermUserID === "")) {
+            return true;
+        } 
+        else if (userProfile?.role === "user") {
+            const matchName = userBooking.campground.name.toLowerCase().includes(searchTermName.toLowerCase());
+            return matchName;
+        }
+        else if (userProfile?.role === "admin") {
+            const matchName = userBooking.campground.name.toLowerCase().includes(searchTermName.toLowerCase());
+            const matchUserID = userBooking.user.toLowerCase().includes(searchTermUserID.toLowerCase());
+            return matchName && matchUserID;
+        }
+    });
+
     if (loading) return <div className="flex justify-center items-center h-64 text-lg font-semibold text-blue-600 animate-pulse">Loading reservations...</div>
     if (error) return <div className="flex justify-center items-center h-64 text-lg font-semibold text-red-600 animate-pulse">{error}</div>
 
     return (
         <>
-            {bookings.map((reservationItem) => {
+            <div className="flex flex-wrap justify-center space-x-4 space-y-4 md:space-y-0">
+                <input
+                    type="text"
+                    placeholder="Search by Campground Name."
+                    value={searchTermName}
+                    onChange={(e) => setSearchTermName(e.target.value)}
+                    className="search-input p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+                />
+                {
+                    userProfile?.role === "admin" && (
+                    <input
+                        type="text"
+                        placeholder="Search by User ID."
+                        value={searchTermUserID}
+                        onChange={(e) => setSearchTermUserID(e.target.value)}
+                        className="search-input p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+                    />
+                    )
+                }
+            </div>
+            {reservationItemForCurrentUser.map((reservationItem) => {
                 const bookingDate = dayjs(reservationItem.bookingDate).format("YYYY-MM-DD")
                 const checkoutDate = dayjs(reservationItem.checkoutDate).format("YYYY-MM-DD")
                 const durationInDays = Math.ceil(dayjs(reservationItem.checkoutDate).diff(dayjs(reservationItem.bookingDate), "day"))

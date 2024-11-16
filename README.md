@@ -16,10 +16,6 @@ Booking Management Functionality
 - (done)Admin user can create (book up to 3 nights)/view/edit/delete any campground bookings
 
 Task
-
-
-
-
 (Poopha)
 - admin booking seperate from all booking
 - About us (Chat-gpt Poopha)
