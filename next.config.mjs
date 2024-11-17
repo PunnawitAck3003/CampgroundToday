@@ -10,6 +10,15 @@ const nextConfig = {
             's359.kapook.com',
             'www.charnveeresortkhaoyai.com',
             "files.thailandtourismdirectory.go.th",
+            "static.wixstatic.com",
+            "www.khao-sok-riverside-cottages.com",
+            "media-cdn.tripadvisor.com",
+            "tricksandtrips.com",
+            "thehiddencoconut.co",
+            "thevocket.com",
+            "thesmartlocal.jp",
+            "e0.pxfuel.com",
+            "animenavi.org",
         ]
     },
     experimental:{
