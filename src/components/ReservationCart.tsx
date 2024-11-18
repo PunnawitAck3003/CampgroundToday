@@ -75,51 +75,63 @@ export default function ReservationCart() {
     }
 
     const handleUpdate = async (bookingId: string) => {
+        // Confirm the update action
         const confirmed = window.confirm("Are you sure you want to update this booking?");
-        if (confirmed) {
-            if (!session?.user?.token || !tempBookingDates[bookingId]) return;
+        if (!confirmed) return;
     
-            const { bookingDate, checkoutDate } = tempBookingDates[bookingId];
-            const createdAt = dayjs().format("YYYY-MM-DD");
+        // Ensure the user is authenticated and booking dates exist
+        if (!session?.user?.token || !tempBookingDates[bookingId]) return;
     
-            // Check if the difference between checkoutDate and bookingDate is greater than 3 days
-            const diffInDays = checkoutDate.diff(bookingDate, "day");
-            if (diffInDays > 3) {
-                window.alert("Checkout date cannot be more than 3 days after the booking date.");
-                return;
-            }
+        const { bookingDate, checkoutDate } = tempBookingDates[bookingId];
     
-            try {
-                // Call the API to update the booking
-                await updateBooking(
-                    session.user.token,
-                    bookingId,
-                    bookingDate.format("YYYY-MM-DD"),
-                    checkoutDate.format("YYYY-MM-DD"),
-                    createdAt
-                );
+        // Validate the date range (checkout date cannot be more than 3 days after booking date)
+        const diffInDays = checkoutDate.diff(bookingDate, "day");
+        if (diffInDays > 3) {
+            window.alert("Checkout date cannot be more than 3 days after the booking date.");
+            return;
+        }
     
-                // Update the bookings state
-                setBookings(
-                    bookings.map((item) =>
-                        item._id === bookingId
-                            ? {
-                                  ...item,
-                                  bookingDate: bookingDate.toISOString(),
-                                  checkoutDate: checkoutDate.toISOString(),
-                              }
-                            : item
-                    )
-                );
+        const createdAt = dayjs().format("YYYY-MM-DD"); // Capture current date
+        setLoading(true); // Set loading state to true
     
-                // Set editing state for the booking ID to false
-                setEditing({ ...editing, [bookingId]: false });
-            } catch (error) {
-                console.error("Error updating booking:", error);
-                setError("Failed to update booking");
-            }
+        try {
+            // Call the API to update the booking
+            await updateBooking(
+                session.user.token,
+                bookingId,
+                bookingDate.format("YYYY-MM-DD"),
+                checkoutDate.format("YYYY-MM-DD"),
+                createdAt
+            );
+    
+            // Update bookings state to reflect the changes
+            setBookings(
+                bookings.map((item) =>
+                    item._id === bookingId
+                        ? {
+                              ...item,
+                              bookingDate: bookingDate.toISOString(),
+                              checkoutDate: checkoutDate.toISOString(),
+                          }
+                        : item
+                )
+            );
+    
+            // Exit editing mode for the booking
+            setEditing({ ...editing, [bookingId]: false });
+    
+            // Optional: Provide success feedback to the user
+            window.alert("Booking updated successfully!");
+        } catch (error) {
+            console.error("Error updating booking:", error);
+    
+            // Show user-friendly error message
+            setError("Failed to update booking. Please try again.");
+        } finally {
+            setLoading(false); // Reset loading state
         }
     };
+    
     
 
     const startEditing = (bookingId: string) => {
