@@ -63,33 +63,47 @@ export default function CampgroundCart() {
     }
 
     const handleUpdate = async () => {
+        // Show confirmation dialog
         const confirmed = window.confirm("Are you sure you want to save changes to this campground?");
-        if (confirmed) {
-            if (!session?.user?.token || !tempCampgroundData) return
-            try {
-                await updateCampground(
-                    session.user.token,
-                    tempCampgroundData.id,
-                    tempCampgroundData.name,
-                    tempCampgroundData.address,
-                    tempCampgroundData.district,
-                    tempCampgroundData.province,
-                    tempCampgroundData.postalcode,
-                    tempCampgroundData.tel,
-                    tempCampgroundData.picture
-                )
-                setCampgrounds(
-                    campgrounds.map((campground) =>
-                        campground.id === tempCampgroundData.id ? tempCampgroundData : campground
-                    )
-                )
-                setEditingCampground(null)
-            } catch (error) {
-                console.error("Error updating campground:", error)
-                setErrorMessage("Failed to update campground")
-            }
+        if (!confirmed) return;
+    
+        // Ensure session token and temporary data exist
+        if (!session?.user?.token || !tempCampgroundData) {
+            setErrorMessage("Session expired or invalid data.");
+            return;
         }
-    }
+    
+        try {
+            // Call the API to update the campground
+            await updateCampground(
+                session.user.token,
+                tempCampgroundData.id,
+                tempCampgroundData.name,
+                tempCampgroundData.address,
+                tempCampgroundData.district,
+                tempCampgroundData.province,
+                tempCampgroundData.postalcode,
+                tempCampgroundData.tel,
+                tempCampgroundData.picture
+            );
+    
+            // Update the local state efficiently
+            setCampgrounds((prevCampgrounds) =>
+                prevCampgrounds.map((campground) =>
+                    campground.id === tempCampgroundData.id ? tempCampgroundData : campground
+                )
+            );
+    
+            // Clear editing state
+            setEditingCampground(null);
+            setTempCampgroundData(null);
+        } catch (error) {
+            // Log the error and show an error message to the user
+            console.error("Error updating campground:", error);
+            setErrorMessage("Failed to update campground. Please try again later.");
+        }
+    };
+    
 
     if (isLoading) {
         return (
@@ -238,24 +252,33 @@ export default function CampgroundCart() {
                                                 className="w-full border p-2 mt-2 rounded"
                                             />
                                             <button
-                                                onClick={(e) => {
-                                                    e.preventDefault() // Prevent navigation on save
-                                                    handleUpdate()
+                                                onClick={async (e) => {
+                                                    e.preventDefault();
+                                                    setIsLoading(true);
+                                                    try {
+                                                        await handleUpdate();
+                                                    } catch (error) {
+                                                        console.error("Error updating:", error);
+                                                    } finally {
+                                                        setIsLoading(false);
+                                                    }
                                                 }}
                                                 className="w-full bg-green-600 text-white py-2 mt-2 rounded hover:bg-green-700"
+                                                disabled={isLoading}
                                             >
-                                                Save Changes
+                                                {isLoading ? "Saving..." : "Save Changes"}
                                             </button>
                                             <button
                                                 onClick={(e) => {
-                                                    e.preventDefault() // Prevent navigation on cancel
-                                                    setEditingCampground(null)
-                                                    setTempCampgroundData(null)
+                                                    e.preventDefault();
+                                                    setEditingCampground(null);
+                                                    setTempCampgroundData(null);
                                                 }}
                                                 className="w-full bg-gray-500 text-white py-2 mt-2 rounded hover:bg-gray-600"
                                             >
                                                 Cancel
                                             </button>
+
                                         </>
                                     ) : (
                                         <>

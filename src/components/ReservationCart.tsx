@@ -76,31 +76,51 @@ export default function ReservationCart() {
 
     const handleUpdate = async (bookingId: string) => {
         const confirmed = window.confirm("Are you sure you want to update this booking?");
-        if(confirmed){
-            if (!session?.user?.token || !tempBookingDates[bookingId]) return
-            const { bookingDate, checkoutDate } = tempBookingDates[bookingId]
-            const createdAt = dayjs().format("YYYY-MM-DD")
-
+        if (confirmed) {
+            if (!session?.user?.token || !tempBookingDates[bookingId]) return;
+    
+            const { bookingDate, checkoutDate } = tempBookingDates[bookingId];
+            const createdAt = dayjs().format("YYYY-MM-DD");
+    
+            // Check if the difference between checkoutDate and bookingDate is greater than 3 days
+            const diffInDays = checkoutDate.diff(bookingDate, "day");
+            if (diffInDays > 3) {
+                window.alert("Checkout date cannot be more than 3 days after the booking date.");
+                return;
+            }
+    
             try {
+                // Call the API to update the booking
                 await updateBooking(
                     session.user.token,
                     bookingId,
                     bookingDate.format("YYYY-MM-DD"),
                     checkoutDate.format("YYYY-MM-DD"),
                     createdAt
-                )
+                );
+    
+                // Update the bookings state
                 setBookings(
                     bookings.map((item) =>
-                        item._id === bookingId ? { ...item, bookingDate: bookingDate.toISOString(), checkoutDate: checkoutDate.toISOString() } : item
+                        item._id === bookingId
+                            ? {
+                                  ...item,
+                                  bookingDate: bookingDate.toISOString(),
+                                  checkoutDate: checkoutDate.toISOString(),
+                              }
+                            : item
                     )
-                )
-                setEditing({ ...editing, [bookingId]: false })
+                );
+    
+                // Set editing state for the booking ID to false
+                setEditing({ ...editing, [bookingId]: false });
             } catch (error) {
-                console.error("Error updating booking:", error)
-                setError("Failed to update booking")
+                console.error("Error updating booking:", error);
+                setError("Failed to update booking");
             }
-        } 
-    }
+        }
+    };
+    
 
     const startEditing = (bookingId: string) => {
         const bookingItem = bookings.find((item) => item._id === bookingId)
