@@ -27,7 +27,7 @@ export default function Banner() {
     return (
         <div
             className="relative w-full overflow-hidden cursor-pointer
-            shadow-lg border border-green-600 rounded-lg h-[500px]"
+            shadow-lg border border-green-600 rounded-lg h-[550px]"
             onClick={() => setIndex(index + 1)}
         >
             <div className={`transition-opacity duration-300 ${fade ? "opacity-100" : "opacity-0"}`}>

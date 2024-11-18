@@ -24,7 +24,7 @@ export default async function TopMenu() {
                     />
                 </Link>
                 <TopMenuItem title="Campground" pageRef="/campground" />
-                {session?.user.role=="user" && (
+                {session?.user.role == "user" && (
                     <TopMenuItem title="My Reservations" pageRef="/cart" />
                 )}
                 <TopMenuItem title="About" pageRef="/about" />
@@ -38,19 +38,19 @@ export default async function TopMenu() {
                 {session ? (
                     <Link href="/api/auth/signout">
                         <div className="flex items-center h-full px-2 text-cyan-600 text-sm cursor-pointer">
-                            Sign-Out of {session.user?.name}
+                            Sign Out of {session.user?.name}
                         </div>
                     </Link>
                 ) : (
                     <>
-                        <Link href="/api/auth/signin">
-                            <div className="flex items-center h-full px-2 text-cyan-600 text-sm cursor-pointer">
-                                Sign-In
-                            </div>
-                        </Link>
                         <Link href="/register">
                             <div className="flex items-center h-full px-2 text-cyan-600 text-sm cursor-pointer">
                                 Register
+                            </div>
+                        </Link>
+                        <Link href="/api/auth/signin">
+                            <div className="flex items-center h-full px-2 text-cyan-600 text-sm cursor-pointer">
+                                Sign In
                             </div>
                         </Link>
                     </>
